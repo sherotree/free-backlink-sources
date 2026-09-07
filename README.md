@@ -2,7 +2,9 @@
 
 A curated list of **free backlink sources** and **product launch platforms** for indie makers, startups, and SaaS founders. Use these directories to earn SEO backlinks, get early users, and launch your product.
 
-> Source: [LaunchHub on Uwarp Design](https://www.uwarp.design/launch) — free launch & directory submission targets.
+## Live directory (my site)
+
+Browse and track submissions here: **[https://www.uwarp.design/launch](https://www.uwarp.design/launch)** — LaunchHub on Uwarp Design (the interactive directory this list is based on).
 
 ## Why this list?
 
@@ -10,13 +12,15 @@ A curated list of **free backlink sources** and **product launch platforms** for
 - **Free / freemium** submission paths — no paid placement required to start
 - Sorted by **quality tier** (A best), then domain rating (DR)
 - Covers Product Hunt, Hacker News, SaaS directories, AI tool directories, and more
+- Full interactive directory: [https://www.uwarp.design/launch](https://www.uwarp.design/launch)
 
 ## Quick start
 
-1. Start with **Tier A** free platforms (highest DR / traffic)
-2. Prepare tagline, description, logo, and screenshots
-3. Submit via each platform’s submit link
-4. Track dofollow / badge / upvote requirements before you publish
+1. Open **[https://www.uwarp.design/launch](https://www.uwarp.design/launch)** to browse & track submissions
+2. Start with **Tier A** free platforms (highest DR / traffic)
+3. Prepare tagline, description, logo, and screenshots
+4. Submit via each platform’s submit link
+5. Track dofollow / badge / upvote requirements before you publish
 
 ## Free backlink sources (43)
 
@@ -116,4 +120,4 @@ These offer a free submission path with optional paid upgrades.
 
 ## Credit
 
-Compiled from [https://www.uwarp.design/launch](https://www.uwarp.design/launch) (LaunchHub).
+Source & live tool: **[https://www.uwarp.design/launch](https://www.uwarp.design/launch)** (LaunchHub — added by [Uwarp Design](https://www.uwarp.design)).
