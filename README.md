@@ -76,7 +76,7 @@ These offer a free submission path with optional paid upgrades.
 
 | Platform | Category | DR | Est. Monthly PV | Quality | Pricing | Dofollow | Badge | Upvotes | Free Wait | Submit |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [SaaSCity](https://saascity.io) | Launch Directory | 61 | — | B | Freemium | Conditional | Yes | No | Free queue; launches on the next Monday drop | [Submit](https://saascity.io/saascity?submit=1) |
+| [SaaSCity](https://saascity.io) | Launch Directory | 64 | — | B | Freemium | Conditional | Yes | No | Free queue; launches on the next Monday drop | [Submit](https://saascity.io/saascity?submit=1) |
 | [Firsto](https://firsto.co/) | Launch Directory | 35 | 3K | B | Freemium | ? | Yes | No | — | [Submit](https://firsto.co/) |
 | [LaunchIgniter](https://launchigniter.com) | Launch Directory | 25 | 1K | B | Freemium | ? | No | No | — | [Submit](https://launchigniter.com) |
 | [AcidTools](https://acidtools.com) | AI Directory | — | — | C | Freemium | ? | No | No | — | [Submit](https://acidtools.com) |
