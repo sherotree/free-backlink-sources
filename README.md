@@ -28,7 +28,7 @@ Browse and track submissions here: **[https://www.uwarp.design/launch](https://w
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | [LinkedIn](https://www.linkedin.com/post/new/) | Social Post | 98 | 1.5B | A | Free | Nofollow | No | No | — | [Submit](https://www.linkedin.com/post/new/) |
 | [Awesome Design Tools](https://github.com/goabstract/Awesome-Design-Tools) | Design Tools | 96 | 200K | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/goabstract/Awesome-Design-Tools) |
-| [Awesome GitHub Lists](https://github.com/topics/awesome) | Discovery Hub | 96 | 100M | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/github/topics/awesome) |
+| [Awesome GitHub Lists](https://github.com/topics/awesome) | Discovery Hub | 96 | 100M | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/topics/awesome) |
 | [Design Resources for Developers](https://github.com/bradtraversy/design-resources-for-developers/blob/master/contributing.md) | Design Resources | 96 | 250K | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/bradtraversy/design-resources-for-developers/blob/master/contributing.md) |
 | [free-for-dev](https://github.com/ripienaar/free-for-dev) | Free Dev Services | 96 | 400K | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/ripienaar/free-for-dev) |
 | [HelloGitHub](https://github.com/521xueweihan/HelloGitHub/issues) | Open Source Showcase | 96 | 500K | A | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/521xueweihan/HelloGitHub/issues) |
