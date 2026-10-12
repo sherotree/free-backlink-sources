@@ -67,6 +67,7 @@ Browse and track submissions here: **[https://www.uwarp.design/launch](https://w
 | [Startup Buffer](https://startupbuffer.com/site/submit/) | Launch Directory | 38 | 12K | B | Free | ? | No | No | — | [Submit](https://startupbuffer.com/site/submit/) |
 | [AI Tools Marketer](https://aitoolsmarketer.com/submit/) | ai-directory / editorial-review | 37 | 4K | B | Free | ? | Yes | No | — | [Submit](https://aitoolsmarketer.com/submit/) |
 | [HuntScreens](https://huntscreens.com/submit) | Launch Directory | 35 | 5K | B | Free | ? | No | No | 30d | [Submit](https://huntscreens.com/submit) |
+| [EliteAI.tools](https://eliteai.tools) | AI Directory | 35 | 300K | B | Free | ? | No | No | — | [Submit](https://eliteai.tools/tool/submit-new-tool) |
 | [Freesets](https://github.com/cosmoart/Freesets/blob/main/CONTRIBUTING.md) | Free Design Assets | 96 | 8K | C | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/cosmoart/Freesets/blob/main/CONTRIBUTING.md) |
 | [SiteLike](https://www.sitelike.org/add-site) | Similar Sites | 71 | 25K | C | Free | ? | No | No | — | [Submit](https://www.sitelike.org/add-site) |
 | [Promote Project](https://www.promoteproject.com/login) | Startup Directory | 48 | 15K | C | Free | ? | No | No | — | [Submit](https://www.promoteproject.com/login) |
