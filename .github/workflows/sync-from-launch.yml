@@ -1,0 +1,56 @@
+name: Sync README from LaunchHub
+
+on:
+  schedule:
+    # Mondays ~09:00 Asia/Shanghai (UTC+8) ≈ 01:00 UTC
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-readme-from-launch
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download launch-platforms.json
+        run: |
+          set -euo pipefail
+          http_code="$(curl -sS -w "%{http_code}" -o launch-platforms.json \
+            "https://www.uwarp.design/launch-platforms.json")"
+          if [ "$http_code" != "200" ]; then
+            echo "::error::Expected HTTP 200 from launch-platforms.json, got ${http_code}"
+            exit 1
+          fi
+          if [ ! -s launch-platforms.json ]; then
+            echo "::error::launch-platforms.json response is empty"
+            exit 1
+          fi
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Regenerate README.md
+        run: node scripts/sync-from-launch.mjs launch-platforms.json
+
+      - name: Commit and push if README changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet README.md; then
+            echo "README.md is already up to date."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "chore: sync README from LaunchHub JSON"
+          git push
