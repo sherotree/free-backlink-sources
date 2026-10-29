@@ -22,6 +22,10 @@ Browse and track submissions here: **[https://www.uwarp.design/launch](https://w
 4. Submit via each platform’s submit link
 5. Track dofollow / badge / upvote requirements before you publish
 
+## Maintaining this list
+
+Platform tables are regenerated weekly from the public export at [launch-platforms.json](https://www.uwarp.design/launch-platforms.json) (workflow: `.github/workflows/sync-from-launch.yml`). The export must be deployed at that URL before the first successful sync; until then, this README reflects the last successful run or a manual snapshot.
+
 ## Free backlink sources (75)
 
 | Platform | Category | DR | Est. Monthly PV | Quality | Pricing | Dofollow | Badge | Upvotes | Free Wait | Submit |
