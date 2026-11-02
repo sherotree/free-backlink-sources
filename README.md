@@ -186,6 +186,7 @@ These offer a free submission path with optional paid upgrades.
 | [TheSaaSDir](https://thesaasdir.com/) | SaaS Directory | 0 | — | C | Freemium | ? | No | No | — | [Submit](https://thesaasdir.com/) |
 
 ## Quality tiers
+| [AIToolNotes](https://aitoolnotes.blogspot.com) | AI Directory | 0 | — | C | Free | ? | No | No | — | [Submit](https://aitoolnotes.blogspot.com) |
 
 | Tier | Meaning |
 | --- | --- |
