@@ -51,6 +51,7 @@ Platform tables are regenerated weekly from the public export at [launch-platfor
 | [StackShare](https://stackshare.io/) | Developer Tools | 78 | 650K | A | Free | Conditional | No | No | — | [Submit](https://stackshare.io/ (List a Tool after sign-in)) |
 | [MossAI](https://mossai.org/) | AI Directory | 76 | — | A | Free | Conditional | No | No | — | [Submit](https://mossai.org/) |
 | [FutureTools](https://futuretools.io/) | AI Directory | 70 | 140K | A | Free | Nofollow | No | No | editorial review | [Submit](https://futuretools.io/submit-a-tool) |
+| [MeetNewAI](https://meetnewai.com/) | AI Directory | — | — | B | Free | Conditional | No | No | Free review | [Submit](https://meetnewai.com/) |
 | [Awesome No Login Web Apps](https://github.com/aviaryan/awesome-no-login-web-apps) | Web Apps | 97 | 45K | B | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/aviaryan/awesome-no-login-web-apps) |
 | [Awesome Design](https://github.com/gztchan/awesome-design) | Design Resources | 97 | 80K | B | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/gztchan/awesome-design) |
 | [Dev Resources](https://github.com/marcelscruz/dev-resources) | Developer Resources | 97 | 60K | B | Free | Nofollow | No | No | Days–weeks (maintainer review) | [Submit](https://github.com/marcelscruz/dev-resources/blob/main/CONTRIBUTING.md) |
