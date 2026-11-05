@@ -40,6 +40,7 @@ jobs:
           node-version: "20"
 
       - name: Regenerate README.md
+        # The script refuses exports under 300 rows so a stale 140-row file cannot replace the list.
         run: node scripts/sync-from-launch.mjs launch-platforms.json
 
       - name: Commit and push if README changed
