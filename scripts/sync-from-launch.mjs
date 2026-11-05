@@ -7,7 +7,8 @@
  * Score matches LaunchHub:
  *   round((0.5 × DR/100 × follow + 0.5 × clamp(log10(visits+1)/7)) × 100)
  * Follow weights the DR half only: dofollow 1, conditional/unknown/nofollow 0.3.
- * Sort is quality tier (only if the export still sends qualityTier), then score, then DR.
+ * Sort is tier (A–D), then score, then DR.
+ * GitHub lists (kind "list") are skipped. Exports smaller than MIN_EXPORT_COUNT are refused.
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -16,6 +17,7 @@ import { resolve } from "node:path";
 const TIER_ORDER = { A: 0, B: 1, C: 2, D: 3 };
 const FOLLOW_WEIGHT = { yes: 1, conditional: 0.3, unknown: 0.3, no: 0.3 };
 const LOW_SCORE = 20;
+const MIN_EXPORT_COUNT = 300;
 const CATEGORY_ACRONYMS = { ai: "AI", saas: "SaaS", seo: "SEO", ux: "UX", ui: "UI" };
 
 const README_PATH = resolve(process.cwd(), "README.md");
@@ -59,6 +61,37 @@ function qualityScore(platform) {
   const status = String(platform.dofollowStatus ?? "unknown").toLowerCase();
   const follow = FOLLOW_WEIGHT[status] ?? FOLLOW_WEIGHT.unknown;
   return Math.round(100 * clamp01(0.5 * dr * follow + 0.5 * traffic));
+}
+
+function scoreTier(score) {
+  if (score >= 50) return "A";
+  if (score >= 35) return "B";
+  if (score >= LOW_SCORE) return "C";
+  return "D";
+}
+
+function qualityTier(platform) {
+  const explicit = String(platform.qualityTier ?? "").trim().toUpperCase();
+  if (TIER_ORDER[explicit] != null) return explicit;
+  return scoreTier(qualityScore(platform));
+}
+
+function isListKind(platform) {
+  return String(platform.kind ?? "").toLowerCase() === "list";
+}
+
+function formatQueue(platform) {
+  const wait = platform.freeReviewWaitTime;
+  const waitText = wait == null || String(wait).trim() === "" ? "" : String(wait).trim();
+  const upvotes =
+    platform.upvotesRequired === true ||
+    platform.upvotesRequired === "true" ||
+    platform.upvotesRequired === "yes" ||
+    platform.upvotesRequired === "Yes";
+  if (upvotes && waitText) return `Upvotes · ${waitText}`;
+  if (upvotes) return "Upvotes";
+  if (waitText) return waitText;
+  return "—";
 }
 
 function formatMonthlyPv(value) {
@@ -171,23 +204,22 @@ function platformRow(platform) {
     formatCategory(platform.category),
     formatDr(platform.dr),
     formatMonthlyPv(platform.monthlyPv),
+    qualityTier(platform),
     String(qualityScore(platform)),
     normalizePricing(platform.pricing) || "—",
     formatDofollow(platform),
     formatBadge(platform.badgeRequired),
+    formatQueue(platform),
     markdownLink("Submit", submitUrl),
   ].map(escapeCell);
   return `| ${cells.join(" | ")} |`;
 }
 
 function sortPlatforms(list) {
-  const hasTier = list.some((platform) => String(platform.qualityTier ?? "").trim() !== "");
   return [...list].sort((a, b) => {
-    if (hasTier) {
-      const tierA = TIER_ORDER[String(a.qualityTier ?? "").toUpperCase()] ?? 99;
-      const tierB = TIER_ORDER[String(b.qualityTier ?? "").toUpperCase()] ?? 99;
-      if (tierA !== tierB) return tierA - tierB;
-    }
+    const tierA = TIER_ORDER[qualityTier(a)] ?? 99;
+    const tierB = TIER_ORDER[qualityTier(b)] ?? 99;
+    if (tierA !== tierB) return tierA - tierB;
     const scoreA = qualityScore(a);
     const scoreB = qualityScore(b);
     if (scoreA !== scoreB) return scoreB - scoreA;
@@ -209,30 +241,26 @@ function filterByPricing(platforms, pricing) {
 
 function renderTable(platforms) {
   const header =
-    "| Platform | Category | DR | Est. Monthly PV | Score | Pricing | Dofollow | Badge | Submit |";
-  const separator = "| --- | --- | ---: | ---: | ---: | --- | --- | --- | --- |";
+    "| Platform | Category | DR | Est. Monthly PV | Tier | Score | Pricing | Dofollow | Badge | Free Wait | Submit |";
+  const separator = "| --- | --- | ---: | ---: | --- | ---: | --- | --- | --- | --- | --- |";
   const rows = sortPlatforms(platforms).map(platformRow);
   return [header, separator, ...rows].join("\n");
 }
 
 function renderPricedSection(platforms) {
   const sorted = sortPlatforms(platforms);
-  const main = sorted.filter((platform) => qualityScore(platform) >= LOW_SCORE);
   const low = sorted.filter((platform) => qualityScore(platform) < LOW_SCORE);
+  if (low.length === 0) return renderTable(sorted);
+  const main = sorted.filter((platform) => qualityScore(platform) >= LOW_SCORE);
   const parts = [];
   if (main.length > 0) {
     parts.push(`### Score ${LOW_SCORE}+ (${main.length})`, "", renderTable(main));
   }
-  if (low.length > 0) {
-    if (parts.length > 0) parts.push("");
-    parts.push(
-      `### Score under ${LOW_SCORE} (${low.length})`,
-      "",
-      `LaunchHub leaves scores under ${LOW_SCORE} off the main grid. They stay in this list so the export count stays complete.`,
-      "",
-      renderTable(low),
-    );
-  }
+  parts.push(
+    `### Score under ${LOW_SCORE} (${low.length})`,
+    "",
+    renderTable(low),
+  );
   return parts.join("\n");
 }
 
@@ -262,9 +290,9 @@ Last synced ${synced} · ${freeCount} free · ${freemiumCount} freemium · [laun
 ## Quick start
 
 1. Open [LaunchHub](${LAUNCH_URL}) if you want filters and a submission tracker. This README is the same free/freemium set.
-2. Start at the top of **Free**. Rows are ordered by score, then DR.
+2. Start at the top of **Free** (tier A). Rows are ordered by tier, then score, then DR.
 3. Prepare a tagline, short description, logo, and screenshots.
-4. Read **Dofollow** and **Badge** before you submit. Conditional often means the link stays nofollow unless you add a badge or pass a review.
+4. Read **Dofollow**, **Badge**, and **Free Wait** before you submit. Conditional often means the link stays nofollow unless you add a badge or pass a review.
 5. Use **Submit**. On freemium sites, the free path is enough unless you choose to pay.
 
 ## How to read a row
@@ -273,21 +301,24 @@ Last synced ${synced} · ${freeCount} free · ${freemiumCount} freemium · [laun
 | --- | --- |
 | DR | Domain rating, 0–100. |
 | Est. Monthly PV | Estimated organic visits. \`8.2M\` under 10 million, \`472M\` above that, \`120K\` for thousands. \`—\` means the export has no traffic figure. |
-| Score | LaunchHub rank from 0 to 100. Bands are below. |
+| Tier | LaunchHub band for the score. See the table below. |
+| Score | LaunchHub rank from 0 to 100. |
 | Pricing | \`Free\` or \`Freemium\`. |
 | Dofollow | \`Yes\`, \`Conditional\`, \`Nofollow\`, or \`?\`. Details under Dofollow. |
 | Badge | \`Yes\` when the free path asks for a homepage or footer badge before approval. |
+| Free Wait | Documented review time. \`Upvotes\` means the free path expects upvotes. \`—\` when the export has no note. |
 | Submit | Submission URL. Text in parentheses after the link is a constraint (for example, sign in first). |
 
-Score is the LaunchHub rank. Dofollow only scales the DR half: dofollow 1.0, conditional / unknown / nofollow 0.3. Traffic is not discounted, and that half caps once visits pass about 10 million. A high DR with no recorded traffic therefore ranks low. Rows are sorted by score, then DR.
+Score is the LaunchHub rank. Dofollow only scales the DR half: dofollow 1.0, conditional / unknown / nofollow 0.3. Traffic is not discounted, and that half caps once visits pass about 10 million. A high DR with no recorded traffic therefore ranks low. Rows follow tier, then score, then DR.
 
 \`score = round((0.5 × DR/100 × follow + 0.5 × clamp(log10(visits + 1) / 7, 0, 1)) × 100)\`
 
-| Score | How to use it |
-| --- | --- |
-| 50+ | Start here. |
-| 20–49 | Submit when the category fits. |
-| Under 20 | Thin listing. LaunchHub leaves these off the main grid. |
+| Tier | Score | How to use it |
+| --- | --- | --- |
+| A | 50+ | Start here. |
+| B | 35–49 | Submit when the category fits. |
+| C | 20–34 | Smaller directories that still clear the main grid. |
+| D | Under 20 | Kept on a separate LaunchHub list, so they are not in this file. |
 
 ### Dofollow
 
@@ -312,7 +343,7 @@ ${renderPricedSection(freemiumPlatforms)}
 
 \`.github/workflows/sync-from-launch.yml\` rebuilds this file weekly from [${EXPORT_URL}](${EXPORT_URL}). Regenerate locally with \`node scripts/sync-from-launch.mjs launch-platforms.json\`.
 
-GitHub awesome-lists are a separate list on LaunchHub and are not in this export, so they are not in the tables.
+The sync refuses an export under ${MIN_EXPORT_COUNT} rows, so an older 140-row snapshot cannot replace this list. This file is the recommended Free and Freemium set. LaunchHub keeps low-score directories, GitHub lists, and paid-only placements on separate lists.
 
 ## Credit
 
@@ -323,13 +354,14 @@ GitHub awesome-lists are a separate list on LaunchHub and are not in this export
 function main() {
   const jsonPath = resolve(process.argv[2] ?? "launch-platforms.json");
   const meta = loadExport(jsonPath);
-  const { platforms } = meta;
-  const freePlatforms = filterByPricing(platforms, "free");
-  const freemiumPlatforms = filterByPricing(platforms, "freemium");
-  const other = platforms.filter((platform) => {
+  const listed = meta.platforms.filter((platform) => !isListKind(platform));
+  const freePlatforms = filterByPricing(listed, "free");
+  const freemiumPlatforms = filterByPricing(listed, "freemium");
+  const other = listed.filter((platform) => {
     const pricing = normalizePricing(platform.pricing).toLowerCase();
     return pricing !== "free" && pricing !== "freemium";
   });
+  const platforms = listed;
 
   if (other.length > 0) {
     const sample = other
@@ -341,9 +373,14 @@ function main() {
   if (freePlatforms.length === 0 && freemiumPlatforms.length === 0) {
     throw new Error("No Free or Freemium platforms found in JSON");
   }
-  if (meta.platformCount != null && meta.platformCount !== platforms.length) {
+  if (meta.platformCount != null && meta.platformCount !== meta.platforms.length) {
     throw new Error(
-      `platformCount ${meta.platformCount} does not match platforms array (${platforms.length})`,
+      `platformCount ${meta.platformCount} does not match platforms array (${meta.platforms.length})`,
+    );
+  }
+  if (platforms.length < MIN_EXPORT_COUNT) {
+    throw new Error(
+      `Export has ${platforms.length} platforms. Refusing to overwrite the README with a snapshot smaller than ${MIN_EXPORT_COUNT}.`,
     );
   }
 
