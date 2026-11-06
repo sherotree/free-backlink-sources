@@ -7,8 +7,10 @@
  * Score matches LaunchHub:
  *   round((0.5 × DR/100 × follow + 0.5 × clamp(log10(visits+1)/7)) × 100)
  * Follow weights the DR half only: dofollow 1, conditional/unknown/nofollow 0.3.
- * Sort is score, then DR. GitHub lists (kind "list") are skipped.
- * Exports smaller than MIN_EXPORT_COUNT are refused.
+ * Sort is score, then DR.
+ * Keeps recommended rows only: Free or Freemium, not kind "list", score >= LOW_SCORE.
+ * Paid, blacklist, GitHub lists, and score-under-20 rows are dropped.
+ * Refuses to write when that recommended set is smaller than MIN_EXPORT_COUNT.
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -64,6 +66,15 @@ function qualityScore(platform) {
 
 function isListKind(platform) {
   return String(platform.kind ?? "").toLowerCase() === "list";
+}
+
+function isFreeOrFreemium(platform) {
+  const pricing = normalizePricing(platform.pricing).toLowerCase();
+  return pricing === "free" || pricing === "freemium";
+}
+
+function isRecommended(platform) {
+  return isFreeOrFreemium(platform) && !isListKind(platform) && qualityScore(platform) >= LOW_SCORE;
 }
 
 function formatMonthlyPv(value) {
@@ -214,23 +225,6 @@ function renderTable(platforms) {
   return [header, separator, ...rows].join("\n");
 }
 
-function renderPricedSection(platforms) {
-  const sorted = sortPlatforms(platforms);
-  const low = sorted.filter((platform) => qualityScore(platform) < LOW_SCORE);
-  if (low.length === 0) return renderTable(sorted);
-  const main = sorted.filter((platform) => qualityScore(platform) >= LOW_SCORE);
-  const parts = [];
-  if (main.length > 0) {
-    parts.push(`### Score ${LOW_SCORE}+ (${main.length})`, "", renderTable(main));
-  }
-  parts.push(
-    `### Score under ${LOW_SCORE} (${low.length})`,
-    "",
-    renderTable(low),
-  );
-  return parts.join("\n");
-}
-
 function syncDate(meta, platforms) {
   const dates = platforms
     .map((platform) => String(platform.updatedAt ?? "").slice(0, 10))
@@ -296,19 +290,19 @@ Score is the LaunchHub rank. Dofollow only scales the DR half: dofollow 1.0, con
 
 Submit without paying.
 
-${renderPricedSection(freePlatforms)}
+${renderTable(freePlatforms)}
 
 ## Freemium (${freemiumCount})
 
 A free submit path exists. Paid skip-the-queue or featured placement is optional.
 
-${renderPricedSection(freemiumPlatforms)}
+${renderTable(freemiumPlatforms)}
 
 ## Sync
 
 \`.github/workflows/sync-from-launch.yml\` rebuilds this file weekly from [${EXPORT_URL}](${EXPORT_URL}). Regenerate locally with \`node scripts/sync-from-launch.mjs launch-platforms.json\`.
 
-The sync refuses an export under ${MIN_EXPORT_COUNT} rows, so an older 140-row snapshot cannot replace this list. This file is the recommended Free and Freemium set. LaunchHub keeps low-score directories, GitHub lists, and paid-only placements on separate lists.
+The sync keeps Free and Freemium rows with a score of ${LOW_SCORE} or higher. It drops GitHub lists, paid placements, and lower scores, and it refuses a recommended set under ${MIN_EXPORT_COUNT} rows. LaunchHub keeps those other lists separate.
 
 ## Credit
 
@@ -319,40 +313,30 @@ The sync refuses an export under ${MIN_EXPORT_COUNT} rows, so an older 140-row s
 function main() {
   const jsonPath = resolve(process.argv[2] ?? "launch-platforms.json");
   const meta = loadExport(jsonPath);
-  const listed = meta.platforms.filter((platform) => !isListKind(platform));
-  const freePlatforms = filterByPricing(listed, "free");
-  const freemiumPlatforms = filterByPricing(listed, "freemium");
-  const other = listed.filter((platform) => {
-    const pricing = normalizePricing(platform.pricing).toLowerCase();
-    return pricing !== "free" && pricing !== "freemium";
-  });
-  const platforms = listed;
-
-  if (other.length > 0) {
-    const sample = other
-      .slice(0, 5)
-      .map((platform) => `${platform.name ?? "?"} (${platform.pricing})`)
-      .join(", ");
-    throw new Error(`Unexpected pricing outside Free/Freemium (${other.length}): ${sample}`);
-  }
-  if (freePlatforms.length === 0 && freemiumPlatforms.length === 0) {
-    throw new Error("No Free or Freemium platforms found in JSON");
-  }
   if (meta.platformCount != null && meta.platformCount !== meta.platforms.length) {
     throw new Error(
       `platformCount ${meta.platformCount} does not match platforms array (${meta.platforms.length})`,
     );
   }
-  if (platforms.length < MIN_EXPORT_COUNT) {
+
+  const recommended = meta.platforms.filter(isRecommended);
+  const freePlatforms = filterByPricing(recommended, "free");
+  const freemiumPlatforms = filterByPricing(recommended, "freemium");
+  const dropped = meta.platforms.length - recommended.length;
+
+  if (freePlatforms.length === 0 && freemiumPlatforms.length === 0) {
+    throw new Error("No recommended Free or Freemium platforms found in JSON");
+  }
+  if (recommended.length < MIN_EXPORT_COUNT) {
     throw new Error(
-      `Export has ${platforms.length} platforms. Refusing to overwrite the README with a snapshot smaller than ${MIN_EXPORT_COUNT}.`,
+      `Recommended set has ${recommended.length} platforms. Refusing to overwrite the README with a snapshot smaller than ${MIN_EXPORT_COUNT}.`,
     );
   }
 
-  const readme = buildReadme(freePlatforms, freemiumPlatforms, meta, platforms);
+  const readme = buildReadme(freePlatforms, freemiumPlatforms, meta, recommended);
   writeFileSync(README_PATH, readme, "utf8");
   console.log(
-    `Wrote README.md (${freePlatforms.length} free, ${freemiumPlatforms.length} freemium, synced ${syncDate(meta, platforms)})`,
+    `Wrote README.md (${freePlatforms.length} free, ${freemiumPlatforms.length} freemium, dropped ${dropped}, synced ${syncDate(meta, recommended)})`,
   );
 }
 

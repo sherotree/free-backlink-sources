@@ -419,7 +419,7 @@ A free submit path exists. Paid skip-the-queue or featured placement is optional
 
 `.github/workflows/sync-from-launch.yml` rebuilds this file weekly from [https://www.uwarp.design/launch-platforms.json](https://www.uwarp.design/launch-platforms.json). Regenerate locally with `node scripts/sync-from-launch.mjs launch-platforms.json`.
 
-The sync refuses an export under 300 rows, so an older 140-row snapshot cannot replace this list. This file is the recommended Free and Freemium set. LaunchHub keeps low-score directories, GitHub lists, and paid-only placements on separate lists.
+The sync keeps Free and Freemium rows with a score of 20 or higher. It drops GitHub lists, paid placements, and lower scores, and it refuses a recommended set under 300 rows. LaunchHub keeps those other lists separate.
 
 ## Credit
 
