@@ -144,7 +144,7 @@ Submit without paying.
 | [Aixploria](https://aixploria.com/) | AI Directory | 57 | 290K | 48 | Free | ? | No | [Submit](https://aixploria.com/) |
 | [Disqus](https://disqus.com/) | Tool Directory | 92 | 50K | 47 | Free | ? | No | [Submit](https://disqus.com/) |
 | [Telegra.ph](https://telegra.ph/) | Social Post | 88 | 48K | 47 | Free | ? | No | [Submit](https://telegra.ph/) |
-| [StackShare](https://stackshare.io/) | Developer Tools | 78 | 93K | 47 | Free | Conditional | No | [Submit](https://stackshare.io/) (List a Tool after sign-in) |
+| [StackShare](https://stackshare.io/) | Developer Tools | 78 | 93K | 47 | Free | Conditional | No | [Submit](https://stackshare.io/) |
 | [PitchWall](https://pitchwall.co/) | Launch Directory | 72 | 108K | 47 | Free | Nofollow | No | [Submit](https://pitchwall.co/submit) |
 | [FutureTools](https://futuretools.io/) | AI Directory | 70 | 120K | 47 | Free | Nofollow | No | [Submit](https://futuretools.io/submit-a-tool) |
 | [SiteLike](https://www.sitelike.org/) | Similar Sites | 64 | 170K | 47 | Free | Nofollow | No | [Submit](https://www.sitelike.org/add-site) |
