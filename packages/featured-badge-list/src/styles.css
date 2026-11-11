@@ -1,0 +1,120 @@
+/* Default layout for @sherotree/featured-badge-list.
+   Import once: `import '@sherotree/featured-badge-list/styles.css'`
+   Override via the `className` prop or by targeting these selectors. */
+
+.fbl-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1.25rem;
+  row-gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .fbl-list {
+    column-gap: 1.5rem;
+    row-gap: 1.25rem;
+  }
+}
+
+.fbl-list__item {
+  flex-shrink: 0;
+}
+
+.fbl-list__link {
+  display: inline-flex;
+  border-radius: 0.125rem;
+  opacity: 0.8;
+  transition: opacity 150ms ease;
+  outline: none;
+}
+
+.fbl-list__link:hover,
+.fbl-list__link:focus-visible {
+  opacity: 1;
+}
+
+.fbl-list__link:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563eb;
+}
+
+.fbl-list__img {
+  height: 2.5rem;
+  width: auto;
+  max-width: min(100%, 14rem);
+  object-fit: contain;
+}
+
+.fbl-rotator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 12rem;
+  min-height: 2.25rem;
+  margin-inline: auto;
+  padding-top: 0.5rem;
+  list-style: none;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+
+.fbl-rotator__item {
+  display: flex;
+  justify-content: center;
+  transition: opacity 300ms ease-out;
+}
+
+.fbl-rotator__item--active {
+  position: relative;
+  z-index: 10;
+  opacity: 0.5;
+}
+
+.fbl-rotator__item--active:hover {
+  opacity: 0.8;
+}
+
+.fbl-rotator__item--hidden {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  opacity: 0;
+}
+
+.fbl-rotator__link {
+  display: inline-flex;
+  border-radius: 0.125rem;
+  outline: none;
+}
+
+.fbl-rotator__link:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563eb;
+}
+
+.fbl-rotator__img {
+  height: 1.75rem;
+  width: auto;
+  max-width: 11rem;
+  object-fit: contain;
+}
+
+@media (min-width: 640px) {
+  .fbl-rotator__img {
+    height: 2rem;
+    max-width: 12rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fbl-list__link,
+  .fbl-rotator__item {
+    transition: none;
+  }
+}
