@@ -1,0 +1,81 @@
+{
+  "name": "@sherotree/featured-badge-list",
+  "version": "0.1.0",
+  "description": "Typed React components for reciprocal / directory featured badges — list and rotating single-badge layouts with a configurable catalog.",
+  "author": "Sherotree",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sherotree/free-backlink-sources.git",
+    "directory": "packages/featured-badge-list"
+  },
+  "homepage": "https://github.com/sherotree/free-backlink-sources/tree/main/packages/featured-badge-list",
+  "bugs": {
+    "url": "https://github.com/sherotree/free-backlink-sources/issues"
+  },
+  "keywords": [
+    "react",
+    "badges",
+    "featured",
+    "directory",
+    "backlinks",
+    "reciprocal",
+    "ssr"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./rotator": {
+      "types": "./dist/rotator.d.ts",
+      "import": "./dist/rotator.js",
+      "require": "./dist/rotator.cjs"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup && node ./scripts/copy-styles.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "pack:dry": "npm pack --dry-run",
+    "pack:smoke": "npm run build && node ./scripts/smoke-pack.mjs",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "jsdom": "^26.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
