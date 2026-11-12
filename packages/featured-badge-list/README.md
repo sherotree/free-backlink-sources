@@ -4,13 +4,14 @@ Typed React components for reciprocal / directory **featured badges**: a wrappin
 
 **Author / brand:** Sherotree  
 **License:** MIT  
-**Status:** publish-ready — not published to npm from this PR unless you choose to.
+**npm:** published as [`@sherotree/featured-badge-list`](https://www.npmjs.com/package/@sherotree/featured-badge-list) (current source version `0.1.1`; homepage https://www.uwarp.design/launch).
 
 ## Install
 
 ```bash
 npm install @sherotree/featured-badge-list
 # peer: react + react-dom >= 18
+# pin a release if needed: npm install @sherotree/featured-badge-list@0.1.1
 ```
 
 Import the stylesheet once (plain CSS, no Tailwind required):
