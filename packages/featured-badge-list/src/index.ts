@@ -11,6 +11,17 @@ export {
 export type { FeaturedBadgeId, ResolveFeaturedBadgesOptions } from './catalog';
 
 export { DEFAULT_FEATURED_BADGES } from './curated-badges';
+export {
+  FEATURED_BADGE_PROVIDER_NOTES,
+  FEATURED_BADGE_PROVIDER_NOTES_BY_ID,
+  FEATURED_BADGE_PROVIDER_NOTE_IDS,
+  assertProviderNotesCoverCatalog,
+} from './provider-notes';
+export type {
+  FeaturedBadgeProviderNote,
+  FeaturedBadgeProviderNoteId,
+  FeaturedBadgeRequirement,
+} from './provider-notes';
 export type {
   FeaturedBadgeCatalog,
   FeaturedBadgeDefinition,

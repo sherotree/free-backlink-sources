@@ -18,6 +18,12 @@ describe('FEATURED_BADGE_CATALOG', () => {
     expect(FEATURED_BADGE_IDS).toEqual(FEATURED_BADGE_CATALOG.map(badge => badge.id));
   });
 
+  it('includes the newly confirmed badge providers', () => {
+    for (const id of ['sumodir', 'yodirectory', 'listbulb', 'startupbase'] as const) {
+      expect(getFeaturedBadge(id)?.id).toBe(id);
+    }
+  });
+
   it('keeps DEFAULT_FEATURED_BADGE_IDS as a known subset', () => {
     for (const id of DEFAULT_FEATURED_BADGE_IDS) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
