@@ -191,6 +191,38 @@ export const FEATURED_BADGE_CATALOG = [
     width: 200,
     height: 58,
   },
+  {
+    id: 'sumodir',
+    href: 'https://sumodir.com/',
+    src: 'https://sumodir.com/badge.png',
+    alt: 'Featured on SumoDir',
+    width: 200,
+    height: 54,
+  },
+  {
+    id: 'yodirectory',
+    href: 'https://yo.directory/',
+    src: 'https://yo.directory/badges/yo-directory-featured-light.svg',
+    alt: 'Featured on yo.directory',
+    width: 200,
+    height: 72,
+  },
+  {
+    id: 'listbulb',
+    href: 'https://www.listbulb.com/',
+    src: 'https://www.listbulb.com/featured-on-listbulb-light.svg',
+    alt: 'Featured on ListBulb',
+    width: 162,
+    height: 54,
+  },
+  {
+    id: 'startupbase',
+    href: 'https://startupbase.io/',
+    src: 'https://statics.startupbase.io/site/badges/launched-on-sb.svg',
+    alt: 'Launched on StartupBase',
+    width: 206,
+    height: 55,
+  },
 ] as const satisfies FeaturedBadgeCatalog;
 
 export type FeaturedBadgeId = (typeof FEATURED_BADGE_CATALOG)[number]['id'];
