@@ -6,8 +6,11 @@ import type { FeaturedBadgeSelectionProps } from './types';
 export type FeaturedBadgeListProps = FeaturedBadgeSelectionProps;
 
 /**
- * Server-safe flex wrap of featured / reciprocal badge embeds.
- * Import `@sherotree/featured-badge-list/styles.css` once for default layout.
+ * Optional multi-badge flex wrap when you need several embeds visible at once.
+ * Prefer `FeaturedBadgeRotator` (`@sherotree/featured-badge-list/rotator`) for
+ * the usual compact single-badge footer slot.
+ *
+ * Server-safe. Import `@sherotree/featured-badge-list/styles.css` once for layout.
  */
 export function FeaturedBadgeList(props: FeaturedBadgeListProps) {
   const { ids, badges, catalog, className } = props;

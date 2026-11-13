@@ -12,12 +12,14 @@ export type FeaturedBadgeRotatorProps = FeaturedBadgeSelectionProps & {
 };
 
 /**
- * One badge visible at a time, but every partner link + img stays in the DOM
- * so reciprocal badge crawlers still find their embed.
+ * Preferred default presentation: one compact badge at a time (footer-friendly),
+ * while every partner link + img stays in the DOM so reciprocal badge crawlers
+ * still find their embed.
  *
- * Client-only (hooks + matchMedia). Import from
+ * Defaults: `intervalMs={4500}`, muted opacity, auto-rotate unless
+ * `prefers-reduced-motion: reduce`. Import from
  * `@sherotree/featured-badge-list/rotator` in Next.js App Router so the
- * `"use client"` boundary is preserved.
+ * `"use client"` boundary is preserved. Import `styles.css` once for layout.
  */
 export function FeaturedBadgeRotator(props: FeaturedBadgeRotatorProps) {
   const { ids, badges, catalog, className, intervalMs = DEFAULT_ROTATE_MS } = props;
