@@ -4,7 +4,7 @@ Typed React components for reciprocal / directory **featured badges**: a wrappin
 
 **Author / brand:** Sherotree  
 **License:** MIT  
-**Status:** publish-ready — not published to npm from this PR unless you choose to.
+**Status:** published on npm as `@sherotree/featured-badge-list` (see version in `package.json`).
 
 ## Install
 
