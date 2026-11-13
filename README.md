@@ -388,6 +388,7 @@ Submit without paying.
 | [ProductCool](https://productcool.com/) | Tool Directory | 15 | 274 | 20 | Free | ? | No | [Submit](https://productcool.com/) |
 | [Nextgentools](https://nextgentools.me/) | Tool Directory | 12 | 331 | 20 | Free | ? | No | [Submit](https://nextgentools.me/) |
 | [NoSignupTools](https://nosignuptools.com/) | Tool Directory | 4 | 463 | 20 | Free | ? | No | [Submit](https://nosignuptools.com/) |
+| [TextScope](https://textscopes.com/) | Tool Directory | 50 | 3000 | 76 | Free | ? | No | [Submit](https://textscopes.com/) |
 
 ## Freemium (19)
 
