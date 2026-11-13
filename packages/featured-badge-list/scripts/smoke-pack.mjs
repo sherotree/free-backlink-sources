@@ -69,7 +69,18 @@ import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 const require = createRequire(import.meta.url);
 const pkgPath = require.resolve('@sherotree/featured-badge-list/package.json');
 const cssPath = require.resolve('@sherotree/featured-badge-list/styles.css');
-assert.ok(readFileSync(cssPath, 'utf8').includes('.fbl-list'));
+const css = readFileSync(cssPath, 'utf8');
+assert.ok(css.includes('.fbl-list'));
+assert.ok(css.includes('.fbl-rotator'));
+const rotatorBlock = css.slice(css.indexOf('.fbl-rotator {'), css.indexOf('.fbl-rotator__item'));
+assert.ok(rotatorBlock.includes('width: auto;'));
+assert.ok(rotatorBlock.includes('flex-shrink: 0;'));
+assert.ok(rotatorBlock.includes('margin: 0;'));
+assert.ok(rotatorBlock.includes('padding: 0;'));
+assert.ok(rotatorBlock.includes('max-width: 12rem;'));
+assert.ok(!rotatorBlock.includes('width: 100%;'));
+assert.ok(!rotatorBlock.includes('margin-inline: auto;'));
+assert.ok(!rotatorBlock.includes('padding-top: 0.5rem;'));
 
 assert.ok(FEATURED_BADGE_CATALOG.length > 0);
 const items = resolveFeaturedBadges({ ids: DEFAULT_FEATURED_BADGE_IDS });
@@ -88,6 +99,7 @@ const rotatorSource = readFileSync(
   'utf8',
 );
 assert.match(rotatorSource, /["']use client["']/);
+assert.match(rotatorSource, /4500/);
 
 console.log('smoke ok', { catalog: FEATURED_BADGE_CATALOG.length, pkgPath });
 `,

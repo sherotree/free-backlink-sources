@@ -1,10 +1,10 @@
 # @sherotree/featured-badge-list
 
-Typed React components for reciprocal / directory **featured badges**: a wrapping list and a single-slot rotator that keeps every partner `<a>` + `<img>` in the DOM (so badge crawlers still find embeds).
+Typed React components for reciprocal / directory **featured badges**. Prefer **`FeaturedBadgeRotator`** for the usual compact single-badge footer slot; use **`FeaturedBadgeList`** only when you need several badges visible at once. Both keep every partner `<a>` + `<img>` in the DOM (so badge crawlers still find embeds).
 
 **Author / brand:** Sherotree  
 **License:** MIT  
-**Status:** publish-ready — not published to npm from this PR unless you choose to.
+**Status:** source package in this repo (npm releases are published separately when you choose).
 
 ## Install
 
@@ -19,49 +19,44 @@ Import the stylesheet once (plain CSS, no Tailwind required):
 import '@sherotree/featured-badge-list/styles.css';
 ```
 
-## Quick start (plain React)
+## Quick start (prefer `FeaturedBadgeRotator`)
+
+Import the rotator from the **`/rotator`** entry (preserves the `"use client"` boundary in Next.js App Router). Default styles are already footer-friendly: inline width, `max-width: 12rem`, no extra margin/padding, badge height `1.75rem` (`2rem` from `640px`), muted opacity `0.5` → `0.8` on hover/focus. Rotation defaults to **`4500ms`** and stops when `prefers-reduced-motion: reduce` is set — no Tailwind `className` patches required for the common footer row.
 
 ```tsx
-import {
-  FeaturedBadgeList,
-  DEFAULT_FEATURED_BADGE_IDS,
-} from '@sherotree/featured-badge-list';
+import { DEFAULT_FEATURED_BADGE_IDS } from '@sherotree/featured-badge-list';
 import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 import '@sherotree/featured-badge-list/styles.css';
 
 export function FooterBadges() {
-  return (
-    <>
-      <FeaturedBadgeList ids={DEFAULT_FEATURED_BADGE_IDS} />
-      <FeaturedBadgeRotator ids={['twelve', 'neeed', 'startupfame']} intervalMs={5000} />
-    </>
-  );
+  return <FeaturedBadgeRotator ids={DEFAULT_FEATURED_BADGE_IDS} />;
 }
 ```
 
-## Next.js (App Router)
-
-- `FeaturedBadgeList` is server-safe — import from the package root in a Server or Client Component.
-- `FeaturedBadgeRotator` uses hooks — import from the **`/rotator`** entry so the published `"use client"` boundary is preserved.
+Optional: pass `intervalMs` to change the cadence (still ignored under reduced motion):
 
 ```tsx
-// app/components/site-badges.tsx  (Server Component OK for the list)
-import { FeaturedBadgeList, DEFAULT_FEATURED_BADGE_IDS } from '@sherotree/featured-badge-list';
+<FeaturedBadgeRotator ids={['twelve', 'neeed', 'startupfame']} intervalMs={5000} />
+```
+
+### Next.js (App Router)
+
+- Prefer `FeaturedBadgeRotator` from `@sherotree/featured-badge-list/rotator` in a Client Component (or a thin `'use client'` re-export).
+- Import `styles.css` once (layout root or the client badge module).
+
+```tsx
+'use client';
+
+import { DEFAULT_FEATURED_BADGE_IDS } from '@sherotree/featured-badge-list';
 import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 import '@sherotree/featured-badge-list/styles.css';
 
 export function SiteBadges() {
-  return (
-    <>
-      <FeaturedBadgeList ids={DEFAULT_FEATURED_BADGE_IDS} />
-      {/* Rotator is a Client Component via the /rotator entry */}
-      <FeaturedBadgeRotator ids={DEFAULT_FEATURED_BADGE_IDS} />
-    </>
-  );
+  return <FeaturedBadgeRotator ids={DEFAULT_FEATURED_BADGE_IDS} />;
 }
 ```
 
-If your bundler does not honor package `"use client"` banners, wrap the rotator in your own client file:
+If your bundler does not honor package `"use client"` banners:
 
 ```tsx
 'use client';
@@ -107,20 +102,21 @@ Resolution rules:
 | `height` | `number` | no | — | `<img height>` |
 | `title` | `string` | no | falls back to `alt` | Anchor `title` |
 
-### `FeaturedBadgeList`
+### `FeaturedBadgeRotator` (preferred)
 
-Server-safe flex wrap. Renders `null` when the resolved list is empty.  
-Props: selection props only (`FeaturedBadgeListProps`).
-
-### `FeaturedBadgeRotator`
-
-Client component. Props: selection props +:
+Client component for the usual **one-badge-at-a-time** footer embed. Import from `@sherotree/featured-badge-list/rotator`. Props: selection props +:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
 | `intervalMs` | `number` | `4500` | Rotation interval; ignored when `prefers-reduced-motion: reduce` |
 
+Default CSS (`.fbl-rotator`) is compact and row-safe: `width: auto`, `max-width: 12rem`, `flex-shrink: 0`, `margin: 0`, `padding: 0`, image height `1.75rem` / `2rem` from `640px`, active opacity `0.5` (hover/focus-within `0.8`). Pass `className` only when you need a site-specific override.
+
 Inactive badges stay mounted with `aria-hidden` and `tabIndex={-1}` so crawlers still see every embed.
+
+### `FeaturedBadgeList` (multi-badge layout)
+
+Use when you need **several badges visible at the same time** (wrapped flex row). Server-safe; import from the package root. Renders `null` when the resolved list is empty. Props: selection props only (`FeaturedBadgeListProps`).
 
 ### Catalog helpers
 
@@ -198,7 +194,12 @@ Machine-readable markers below (`catalog-id:<id>`) are asserted by unit tests so
 
 ## Styling
 
-Default layout ships in `styles.css` under `.fbl-list` / `.fbl-rotator` selectors. Pass `className` to extend or replace spacing. No Tailwind peer dependency — the original utility-class look is inlined as plain CSS for reuse outside Next.js workspaces.
+Default layout ships in `styles.css` under `.fbl-list` / `.fbl-rotator` selectors. No Tailwind peer dependency.
+
+- **`.fbl-rotator`** — preferred compact single-badge footer defaults (see above). Designed so footer rows do not need Tailwind margin/padding/width/shrink patches.
+- **`.fbl-list`** — multi-badge wrap for when several embeds should show together.
+
+Pass `className` or write more specific CSS when a host site needs a different density. The package does not ship site-specific design tokens (for example brand paper colors).
 
 ## Dataset & asset provenance
 
