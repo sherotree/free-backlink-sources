@@ -9,7 +9,6 @@ import {
 } from '../catalog';
 import { FeaturedBadgeRotator } from '../featured-badge-rotator';
 import {
-  foundrlistListing,
   peerpushListing,
   scoutforgeListing,
   trylaunchListing,
@@ -27,20 +26,12 @@ const FOREIGN_PRODUCT_MARKERS = [
 /** BoreGame-shaped consumer: ids only, no listing overrides (matches live SSR props). */
 const BOREGAME_IDS = [
   'peerpush',
-  'foundrlist',
   'trylaunch',
   'ufind',
   'twelve',
   'scoutforge',
   'lovableapp',
-  'toolfame',
-  'launchllama',
-  'sidehunt',
-  'saasfame',
-  'findly',
-  'toolfio',
   'turbo0',
-  'listbulb',
   'startupbase',
 ] as const;
 
@@ -49,7 +40,6 @@ const UWAR_OVERRIDES = {
   peerpush: peerpushListing('ui-design-tools-directory', {
     alt: 'UI Design Tools Directory on PeerPush',
   }),
-  foundrlist: foundrlistListing('uwarp-2'),
   scoutforge: scoutforgeListing('uwarp'),
   trylaunch: trylaunchListing('uwarp'),
   ufind: ufindListing('free-ui-design-tools-directory'),
@@ -61,7 +51,7 @@ function serializedBadgeFields(items: { href: string; src: string; alt: string }
 
 describe('cross-product safety (no silent foreign listing leak)', () => {
   it('marks listing-bound providers that lack a public product-agnostic badge image', () => {
-    expect(LISTING_REQUIRED_BADGE_IDS).toEqual(['peerpush', 'foundrlist', 'scoutforge']);
+    expect(LISTING_REQUIRED_BADGE_IDS).toEqual(['peerpush', 'scoutforge']);
     for (const id of LISTING_REQUIRED_BADGE_IDS) {
       expect(getFeaturedBadge(id)?.requiresListing).toBe(true);
     }
@@ -84,7 +74,6 @@ describe('cross-product safety (no silent foreign listing leak)', () => {
 
     // Listing-bound stubs are skipped without overrides (safe + explainable).
     expect(resolved.map(badge => badge.id)).not.toContain('peerpush');
-    expect(resolved.map(badge => badge.id)).not.toContain('foundrlist');
     expect(resolved.map(badge => badge.id)).not.toContain('scoutforge');
 
     // Generic directory embeds still resolve.
@@ -94,8 +83,6 @@ describe('cross-product safety (no silent foreign listing leak)', () => {
         'ufind',
         'twelve',
         'lovableapp',
-        'toolfame',
-        'listbulb',
         'startupbase',
       ]),
     );
@@ -111,17 +98,12 @@ describe('cross-product safety (no silent foreign listing leak)', () => {
 
   it('explicit Uwarp overrides win and are not applied to an ids-only consumer', () => {
     const uwarpResolved = resolveFeaturedBadges({
-      ids: ['peerpush', 'foundrlist', 'trylaunch', 'ufind', 'scoutforge', 'twelve'],
+      ids: ['peerpush', 'trylaunch', 'ufind', 'scoutforge', 'twelve'],
       overrides: {
         peerpush: {
           href: UWAR_OVERRIDES.peerpush.href,
           src: UWAR_OVERRIDES.peerpush.src,
           alt: UWAR_OVERRIDES.peerpush.alt,
-        },
-        foundrlist: {
-          href: UWAR_OVERRIDES.foundrlist.href,
-          src: UWAR_OVERRIDES.foundrlist.src,
-          alt: UWAR_OVERRIDES.foundrlist.alt,
         },
         scoutforge: {
           href: UWAR_OVERRIDES.scoutforge.href,
@@ -142,7 +124,6 @@ describe('cross-product safety (no silent foreign listing leak)', () => {
       src: 'https://peerpush.com/p/ui-design-tools-directory/badge.png',
       alt: 'UI Design Tools Directory on PeerPush',
     });
-    expect(uwarpResolved.find(badge => badge.id === 'foundrlist')?.src).toContain('uwarp-2');
     expect(uwarpResolved.find(badge => badge.id === 'trylaunch')?.href).toBe(
       'https://trylaunch.ai/launch/uwarp',
     );
@@ -189,13 +170,12 @@ describe('cross-product safety (no silent foreign listing leak)', () => {
 });
 
 describe('listing helpers', () => {
-  it('builds PeerPush / FoundrList / ScoutForge embeds from consumer slugs', () => {
+  it('builds PeerPush / ScoutForge embeds from consumer slugs', () => {
     expect(peerpushListing('boregame')).toMatchObject({
       id: 'peerpush',
       href: 'https://peerpush.com/p/boregame',
       src: 'https://peerpush.com/p/boregame/badge.png',
     });
-    expect(foundrlistListing('my-app').src).toBe('https://www.foundrlist.com/api/badge/my-app');
     expect(scoutforgeListing('my-app').href).toBe('https://scoutforge.net/apps/my-app?ref=badge');
   });
 });

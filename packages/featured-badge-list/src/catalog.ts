@@ -37,16 +37,6 @@ export const FEATURED_BADGE_CATALOG = [
     height: 54,
   },
   {
-    id: 'foundrlist',
-    href: 'https://www.foundrlist.com/',
-    // Badge API is product-slug specific; supply via overrides / listing helper.
-    src: 'https://www.foundrlist.com/',
-    alt: 'Featured on FoundrList',
-    width: 150,
-    height: 48,
-    requiresListing: true,
-  },
-  {
     id: 'trylaunch',
     href: 'https://trylaunch.ai/',
     src: 'https://trylaunch.ai/badges/badge-white.png',
@@ -107,36 +97,12 @@ export const FEATURED_BADGE_CATALOG = [
     height: 60,
   },
   {
-    id: 'toolfame',
-    href: 'https://toolfame.com/',
-    src: 'https://toolfame.com/badge-light.svg',
-    alt: 'Featured on ToolFame',
-    width: 160,
-    height: 54,
-  },
-  {
     id: 'launchigniter',
     href: 'https://launchigniter.com/',
     src: 'https://launchigniter.com/badge.svg',
     alt: 'Featured on LaunchIgniter',
     width: 250,
     height: 54,
-  },
-  {
-    id: 'launchllama',
-    href: 'https://tools.launchllama.co/',
-    src: 'https://tools.launchllama.co/featured-badge.png?v=2',
-    alt: 'Featured on Launch Llama',
-    width: 200,
-    height: 53,
-  },
-  {
-    id: 'sidehunt',
-    href: 'https://sidehunt.io/',
-    src: 'https://sidehunt.io/badges/sidehunt-badge-light.svg',
-    alt: 'Featured on SideHunt',
-    width: 200,
-    height: 60,
   },
   {
     id: 'launchbuff',
@@ -153,30 +119,6 @@ export const FEATURED_BADGE_CATALOG = [
     alt: 'Featured on Startup Fast',
     width: 200,
     height: 79,
-  },
-  {
-    id: 'saasfame',
-    href: 'https://saasfame.com/',
-    src: 'https://saasfame.com/badge-light.svg',
-    alt: 'Featured on SaaSFame',
-    width: 170,
-    height: 54,
-  },
-  {
-    id: 'findly',
-    href: 'https://findly.tools/',
-    src: 'https://findly.tools/badges/findly-tools-badge-light.svg',
-    alt: 'Featured on findly.tools',
-    width: 139,
-    height: 44,
-  },
-  {
-    id: 'toolfio',
-    href: 'https://toolfio.com/',
-    src: 'https://toolfio.com/toolfio-light-badge.png',
-    alt: 'Featured on Toolfio',
-    width: 200,
-    height: 54,
   },
   {
     id: 'turbo0',
@@ -219,14 +161,6 @@ export const FEATURED_BADGE_CATALOG = [
     height: 72,
   },
   {
-    id: 'listbulb',
-    href: 'https://www.listbulb.com/',
-    src: 'https://www.listbulb.com/featured-on-listbulb-light.svg',
-    alt: 'Featured on ListBulb',
-    width: 162,
-    height: 54,
-  },
-  {
     id: 'startupbase',
     href: 'https://startupbase.io/',
     src: 'https://statics.startupbase.io/site/badges/launched-on-sb.svg',
@@ -250,7 +184,6 @@ export const FEATURED_BADGE_IDS: readonly FeaturedBadgeId[] = FEATURED_BADGE_CAT
 export const DEFAULT_FEATURED_BADGE_IDS = [
   'peerpush',
   'neeed',
-  'foundrlist',
   'trylaunch',
   'ufind',
   'twelve',
@@ -260,7 +193,6 @@ export const DEFAULT_FEATURED_BADGE_IDS = [
 /** Catalog ids that need a consumer product listing before they render. */
 export const LISTING_REQUIRED_BADGE_IDS = [
   'peerpush',
-  'foundrlist',
   'scoutforge',
 ] as const satisfies readonly FeaturedBadgeId[];
 

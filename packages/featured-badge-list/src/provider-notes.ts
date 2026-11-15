@@ -50,16 +50,6 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
     variants: 'Official dark asset also exists at `/badges/neeed-badge-dark.svg` (override `src`).',
   },
   {
-    id: 'foundrlist',
-    name: 'FoundrList',
-    site: 'https://www.foundrlist.com/',
-    requirement: 'optional-reciprocal',
-    onSite:
-      'Listing-bound: catalog stub is skipped until you pass `overrides` (or `foundrlistListing(slug)`).',
-    supplyYourself:
-      '`overrides.foundrlist` or `foundrlistListing(slug)` → `href` `https://www.foundrlist.com/product/{slug}?utm_source=badge&utm_medium=embed`; `src` `https://www.foundrlist.com/api/badge/{slug}`',
-  },
-  {
     id: 'trylaunch',
     name: 'TryLaunch / Launch',
     site: 'https://trylaunch.ai/',
@@ -123,37 +113,11 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
       'Free submission requires a homepage badge plus Verify Link. Observed DR guidance (e.g. DR > 2) is directory policy — confirm on their submit page. Dofollow requirement on your badge link is not confirmed here.',
   },
   {
-    id: 'toolfame',
-    name: 'ToolFame',
-    site: 'https://toolfame.com/',
-    requirement: 'required-for-free',
-    onSite: 'Free path commonly expects their badge.',
-    variants: 'Dark badge: `https://toolfame.com/badge-dark.svg`.',
-  },
-  {
     id: 'launchigniter',
     name: 'LaunchIgniter',
     site: 'https://launchigniter.com/',
     requirement: 'required-for-free',
     onSite: 'Free path commonly expects their badge; override `href`/`src` with product-specific badge API URLs when provided.',
-  },
-  {
-    id: 'launchllama',
-    name: 'Launch Llama',
-    site: 'https://tools.launchllama.co/',
-    requirement: 'required-for-free',
-    onSite: 'Free path commonly expects their featured badge.',
-  },
-  {
-    id: 'sidehunt',
-    name: 'SideHunt',
-    site: 'https://sidehunt.io/',
-    requirement: 'conditional',
-    onSite:
-      'Only the **Free Launch** option requires a SideHunt link/badge for verification. A separate free **Nofollow Launch** needs no badge. Free weekly slots may be full — check pricing.',
-    listingNote:
-      'Free Launch listings are nofollow by default; top-3 can earn dofollow. Nofollow Launch stays nofollow even if you win. That listing `rel` is separate from the on-site verification link.',
-    variants: 'Dark badge: `https://sidehunt.io/badges/sidehunt-badge-dark.svg`. Text links to sidehunt.io also satisfy Free Launch verification.',
   },
   {
     id: 'launchbuff',
@@ -168,32 +132,6 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
     site: 'https://startupfa.st/',
     requirement: 'required-for-free',
     onSite: 'Free path commonly expects their badge.',
-  },
-  {
-    id: 'saasfame',
-    name: 'SaaSFame',
-    site: 'https://saasfame.com/',
-    requirement: 'required-for-free',
-    onSite: 'Free path commonly expects their badge.',
-    variants: 'Dark badge: `https://saasfame.com/badge-dark.svg`.',
-  },
-  {
-    id: 'findly',
-    name: 'findly.tools',
-    site: 'https://findly.tools/',
-    requirement: 'conditional',
-    onSite:
-      'Their own free listing path expects a footer badge. Paid packs (e.g. directories submit pack) and other paid listing SKUs are separate; do not treat the directory as globally paid-only or globally badge-free.',
-    variants: 'Dark badge: `https://findly.tools/badges/findly-tools-badge-dark.svg`.',
-  },
-  {
-    id: 'toolfio',
-    name: 'ToolFio',
-    site: 'https://toolfio.com/',
-    requirement: 'required-for-free',
-    onSite:
-      'Free path requires a permanent on-site badge/backlink and meets their DR threshold (commonly described as DR 20+ — confirm live). Dofollow on your required backlink is not treated as officially evidenced here.',
-    variants: 'Dark badge: `https://toolfio.com/toolfio-dark-badge.png`.',
   },
   {
     id: 'turbo0',
@@ -240,19 +178,6 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
       'Free listings receive no Verified/Pro badge on yo.directory itself — those are paid listing badges, not the on-site backlink.',
     variants:
       'Light: `/badges/yo-directory-featured-light.svg` (also aliased at `/badge.svg`). Dark: `/badges/yo-directory-featured-dark.svg`.',
-  },
-  {
-    id: 'listbulb',
-    name: 'ListBulb',
-    site: 'https://www.listbulb.com/',
-    requirement: 'required-for-free',
-    onSite:
-      'Free listing requires badge verification (or a qualifying dofollow ListBulb backlink) plus a 3-upvote weekly streak before submit. This package does **not** automate votes. QuickPass/Featured paid plans can skip the badge.',
-    supplyYourself:
-      'Override `href` to your pending/live tool URL: `https://www.listbulb.com/tools/{slug}` (slug comes from ListBulb after you create the listing).',
-    variants: 'Dark badge: `https://www.listbulb.com/featured-on-listbulb-dark.svg`.',
-    listingNote:
-      'Free listings get one dofollow link from ListBulb after badge verification and go-live. Until live, their outbound links use nofollow.',
   },
   {
     id: 'startupbase',

@@ -14,7 +14,6 @@ export type { FeaturedBadgeId, ResolveFeaturedBadgesOptions } from './catalog';
 export { DEFAULT_FEATURED_BADGES } from './curated-badges';
 export {
   peerpushListing,
-  foundrlistListing,
   scoutforgeListing,
   trylaunchListing,
   ufindListing,

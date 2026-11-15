@@ -20,24 +20,6 @@ export function peerpushListing(
 }
 
 /**
- * Build a FoundrList product badge embed from your FoundrList product slug.
- */
-export function foundrlistListing(
-  slug: string,
-  options: { alt?: string; width?: number; height?: number } = {},
-): FeaturedBadgeItem {
-  const trimmed = slug.trim().replace(/^\/+|\/+$/g, '');
-  return {
-    id: 'foundrlist',
-    href: `https://www.foundrlist.com/product/${trimmed}?utm_source=badge&utm_medium=embed`,
-    src: `https://www.foundrlist.com/api/badge/${trimmed}`,
-    alt: options.alt ?? 'Featured on FoundrList',
-    width: options.width ?? 150,
-    height: options.height ?? 48,
-  };
-}
-
-/**
  * Build a Scout Forge app badge embed from your Scout Forge app slug.
  */
 export function scoutforgeListing(

@@ -20,7 +20,7 @@ describe('FEATURED_BADGE_CATALOG', () => {
   });
 
   it('includes the newly confirmed badge providers', () => {
-    for (const id of ['sumodir', 'yodirectory', 'listbulb', 'startupbase'] as const) {
+    for (const id of ['sumodir', 'yodirectory', 'startupbase'] as const) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
     }
   });
