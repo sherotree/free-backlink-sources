@@ -3,6 +3,7 @@ import {
   DEFAULT_FEATURED_BADGE_IDS,
   FEATURED_BADGE_CATALOG,
   FEATURED_BADGE_IDS,
+  LISTING_REQUIRED_BADGE_IDS,
   getFeaturedBadge,
   resolveFeaturedBadges,
 } from '../catalog';
@@ -32,8 +33,14 @@ describe('FEATURED_BADGE_CATALOG', () => {
 });
 
 describe('resolveFeaturedBadges', () => {
-  it('returns the full catalog when nothing is selected', () => {
-    expect(resolveFeaturedBadges()).toHaveLength(FEATURED_BADGE_CATALOG.length);
+  it('returns renderable catalog rows when nothing is selected (skips listing stubs)', () => {
+    const resolved = resolveFeaturedBadges();
+    expect(resolved).toHaveLength(
+      FEATURED_BADGE_CATALOG.length - LISTING_REQUIRED_BADGE_IDS.length,
+    );
+    expect(resolved.every(badge => !LISTING_REQUIRED_BADGE_IDS.includes(badge.id as never))).toBe(
+      true,
+    );
   });
 
   it('preserves id order and skips unknown ids', () => {
@@ -69,10 +76,50 @@ describe('resolveFeaturedBadges', () => {
     ] as const;
     expect(resolveFeaturedBadges({ ids: ['private'], catalog })).toEqual([...catalog]);
   });
+
+  it('merges overrides onto catalog matches with explicit fields winning', () => {
+    const resolved = resolveFeaturedBadges({
+      ids: ['twelve', 'peerpush'],
+      overrides: {
+        twelve: { href: 'https://twelve.tools/my-tool' },
+        peerpush: {
+          href: 'https://peerpush.com/p/my-app',
+          src: 'https://peerpush.com/p/my-app/badge.png',
+          alt: 'My App on PeerPush',
+        },
+      },
+    });
+    expect(resolved).toHaveLength(2);
+    expect(resolved[0]).toMatchObject({
+      id: 'twelve',
+      href: 'https://twelve.tools/my-tool',
+      src: 'https://twelve.tools/badge0-white.svg',
+      alt: 'Featured on Twelve Tools',
+    });
+    expect(resolved[1]).toMatchObject({
+      id: 'peerpush',
+      href: 'https://peerpush.com/p/my-app',
+      src: 'https://peerpush.com/p/my-app/badge.png',
+      alt: 'My App on PeerPush',
+    });
+  });
+
+  it('does not treat a partial listing override as enough for requiresListing ids', () => {
+    const resolved = resolveFeaturedBadges({
+      ids: ['peerpush'],
+      overrides: { peerpush: { href: 'https://peerpush.com/p/my-app' } },
+    });
+    expect(resolved).toEqual([]);
+  });
 });
 
 describe('DEFAULT_FEATURED_BADGES', () => {
-  it('matches DEFAULT_FEATURED_BADGE_IDS length', () => {
-    expect(DEFAULT_FEATURED_BADGES).toHaveLength(DEFAULT_FEATURED_BADGE_IDS.length);
+  it('resolves only non-listing-bound default ids without overrides', () => {
+    expect(DEFAULT_FEATURED_BADGES.map(badge => badge.id)).toEqual([
+      'neeed',
+      'trylaunch',
+      'ufind',
+      'twelve',
+    ]);
   });
 });

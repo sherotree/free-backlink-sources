@@ -29,7 +29,40 @@ import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 import '@sherotree/featured-badge-list/styles.css';
 
 export function FooterBadges() {
+  // Generic directory badges render immediately. Listing-bound ids
+  // (peerpush / foundrlist / scoutforge) stay omitted until you pass overrides.
   return <FeaturedBadgeRotator ids={DEFAULT_FEATURED_BADGE_IDS} />;
+}
+```
+
+Supply **your** product listings with `overrides` (explicit fields always win). Listing helpers build common URL shapes:
+
+```tsx
+import {
+  DEFAULT_FEATURED_BADGE_IDS,
+  peerpushListing,
+  foundrlistListing,
+  scoutforgeListing,
+} from '@sherotree/featured-badge-list';
+import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
+
+const peerpush = peerpushListing('your-slug');
+const foundrlist = foundrlistListing('your-slug');
+const scoutforge = scoutforgeListing('your-slug');
+
+export function FooterBadges() {
+  return (
+    <FeaturedBadgeRotator
+      ids={DEFAULT_FEATURED_BADGE_IDS}
+      overrides={{
+        peerpush: { href: peerpush.href, src: peerpush.src, alt: peerpush.alt },
+        foundrlist: { href: foundrlist.href, src: foundrlist.src, alt: foundrlist.alt },
+        scoutforge: { href: scoutforge.href, src: scoutforge.src, alt: scoutforge.alt },
+        trylaunch: { href: 'https://trylaunch.ai/launch/your-slug' },
+        ufind: { href: 'https://ufind.best/products/your-slug' },
+      }}
+    />
+  );
 }
 ```
 
@@ -43,16 +76,26 @@ Optional: pass `intervalMs` to change the cadence (still ignored under reduced m
 
 - Prefer `FeaturedBadgeRotator` from `@sherotree/featured-badge-list/rotator` in a Client Component (or a thin `'use client'` re-export).
 - Import `styles.css` once (layout root or the client badge module).
+- Pass `overrides` for any listing-bound provider you select by `ids`.
 
 ```tsx
 'use client';
 
-import { DEFAULT_FEATURED_BADGE_IDS } from '@sherotree/featured-badge-list';
+import { DEFAULT_FEATURED_BADGE_IDS, peerpushListing } from '@sherotree/featured-badge-list';
 import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 import '@sherotree/featured-badge-list/styles.css';
 
+const peerpush = peerpushListing('your-slug');
+
 export function SiteBadges() {
-  return <FeaturedBadgeRotator ids={DEFAULT_FEATURED_BADGE_IDS} />;
+  return (
+    <FeaturedBadgeRotator
+      ids={DEFAULT_FEATURED_BADGE_IDS}
+      overrides={{
+        peerpush: { href: peerpush.href, src: peerpush.src, alt: peerpush.alt },
+      }}
+    />
+  );
 }
 ```
 
@@ -69,7 +112,8 @@ export { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 - A **required dofollow backlink on your site** is not the same thing as a directory promising a **dofollow listing** on *their* page.
 - Rendering a badge from this catalog does **not** mean your product is approved, verified, or listed.
 - This package is **not affiliated with or approved by** any listed directory. Trademarks belong to their owners.
-- Examples below use **generic** directory URLs / public badge assets. Replace product-specific `href` / `src` values with **your** listing IDs before production. Do not copy private campaign URLs.
+- Defaults use **generic** directory URLs / public badge assets only. Product listing `href` / `src` / product-named `alt` must come from **your** `overrides` (or a private `catalog` / custom `badges`). The package never silently ships another product’s listing.
+- Do not copy private campaign URLs from sample sites.
 
 ## API
 
@@ -80,15 +124,17 @@ export { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 | `ids` | `readonly string[]` | — | Resolve from `catalog` in this order; unknown ids skipped |
 | `badges` | `readonly FeaturedBadgeItem[]` | — | Custom items (appended after `ids` matches) |
 | `catalog` | `FeaturedBadgeCatalog` | package `FEATURED_BADGE_CATALOG` | Override the built-in catalog |
+| `overrides` | `FeaturedBadgeOverrides` | — | Per-id patches merged onto catalog matches; explicit fields win |
 | `className` | `string` | — | Extra classes on the root `<ul>` |
 | `aria-label` | `string` | `"Featured on communities and platforms"` | List accessible name |
 
 Resolution rules:
 
-- neither `ids` nor `badges` → entire catalog  
-- `ids` only → catalog matches  
-- `badges` only → those items  
-- both → catalog matches first, then custom badges  
+- neither `ids` nor `badges` → renderable catalog rows (listing-bound stubs skipped unless `overrides` satisfy them)
+- `ids` only → catalog matches (same listing-bound skip rule)
+- `badges` only → those items
+- both → catalog matches first, then custom badges
+- `overrides` → shallow-merge onto catalog matches by id; for `requiresListing` ids both `href` and `src` must be present in the override or the id is skipped
 
 ### `FeaturedBadgeItem` / catalog entry fields
 
@@ -101,6 +147,7 @@ Resolution rules:
 | `width` | `number` | no | — | `<img width>` |
 | `height` | `number` | no | — | `<img height>` |
 | `title` | `string` | no | falls back to `alt` | Anchor `title` |
+| `requiresListing` | `boolean` | catalog only | — | When true, skipped until `overrides[id]` supplies `href` + `src` |
 
 ### `FeaturedBadgeRotator` (preferred)
 
@@ -126,22 +173,30 @@ import {
   FEATURED_BADGE_IDS,
   DEFAULT_FEATURED_BADGE_IDS,
   DEFAULT_FEATURED_BADGES,
+  LISTING_REQUIRED_BADGE_IDS,
   FEATURED_BADGE_PROVIDER_NOTES,
   FEATURED_BADGE_PROVIDER_NOTES_BY_ID,
   getFeaturedBadge,
   resolveFeaturedBadges,
+  peerpushListing,
+  foundrlistListing,
+  scoutforgeListing,
+  trylaunchListing,
+  ufindListing,
 } from '@sherotree/featured-badge-list';
 ```
 
 | Export | Type / shape | Description |
 | --- | --- | --- |
-| `FEATURED_BADGE_CATALOG` | `readonly FeaturedBadgeDefinition[]` | Built-in embeds |
+| `FEATURED_BADGE_CATALOG` | `readonly FeaturedBadgeDefinition[]` | Built-in embeds (directory-safe defaults) |
 | `FEATURED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | All selectable keys in catalog order |
 | `DEFAULT_FEATURED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | Curated reciprocal subset |
-| `DEFAULT_FEATURED_BADGES` | `FeaturedBadgeItem[]` | Resolved objects for the default subset |
+| `DEFAULT_FEATURED_BADGES` | `FeaturedBadgeItem[]` | Resolved defaults **without** overrides (listing-bound ids omitted) |
+| `LISTING_REQUIRED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | Ids that need `overrides` (`peerpush`, `foundrlist`, `scoutforge`) |
 | `FEATURED_BADGE_PROVIDER_NOTES` | notes array | Requirement / usage notes per id |
 | `getFeaturedBadge(id)` | `FeaturedBadgeDefinition \| undefined` | Lookup one catalog entry |
 | `resolveFeaturedBadges(options)` | `FeaturedBadgeItem[]` | Same resolution rules as the components |
+| `peerpushListing` / `foundrlistListing` / `scoutforgeListing` / `trylaunchListing` / `ufindListing` | `(slug) => FeaturedBadgeItem` | Build product listing fields from your slug |
 
 ## All selectable provider keys
 
@@ -152,13 +207,13 @@ Machine-readable markers below (`catalog-id:<id>`) are asserted by unit tests so
 
 | Key | Name | Requirement | On-site / usage |
 | --- | --- | --- | --- |
-| <!-- catalog-id:peerpush --> `peerpush` | PeerPush | optional reciprocal | Supply your PeerPush slug in `href`/`src`. |
+| <!-- catalog-id:peerpush --> `peerpush` | PeerPush | optional reciprocal | **Listing-bound** — skipped until `overrides` / `peerpushListing(slug)` supply `href`+`src`. |
 | <!-- catalog-id:neeed --> `neeed` | neeed.directory | optional reciprocal | Public light badge; dark variant available. |
-| <!-- catalog-id:foundrlist --> `foundrlist` | FoundrList | optional reciprocal | Supply your FoundrList product slug in `href`/`src`. |
-| <!-- catalog-id:trylaunch --> `trylaunch` | TryLaunch / Launch | optional reciprocal | Supply your launch slug in `href`. |
-| <!-- catalog-id:ufind --> `ufind` | ufind.best | required for free launch week | Badge/backlink for free launch week. Listing may be nofollow after the week; top-3 lifetime dofollow is a listing outcome, not the on-site rule. Prefer your product URL in `href`. |
+| <!-- catalog-id:foundrlist --> `foundrlist` | FoundrList | optional reciprocal | **Listing-bound** — skipped until `overrides` / `foundrlistListing(slug)` supply `href`+`src`. |
+| <!-- catalog-id:trylaunch --> `trylaunch` | TryLaunch / Launch | optional reciprocal | Generic badge image + directory root by default; override `href` with your launch slug. |
+| <!-- catalog-id:ufind --> `ufind` | ufind.best | required for free launch week | Badge/backlink for free launch week. Listing may be nofollow after the week; top-3 lifetime dofollow is a listing outcome, not the on-site rule. Prefer your product URL in `href` via `overrides`. |
 | <!-- catalog-id:twelve --> `twelve` | Twelve Tools | optional reciprocal | Official public badge; dark variant available. |
-| <!-- catalog-id:scoutforge --> `scoutforge` | Scout Forge | optional reciprocal | Supply your app slug in `href`/`src`. |
+| <!-- catalog-id:scoutforge --> `scoutforge` | Scout Forge | optional reciprocal | **Listing-bound** — skipped until `overrides` / `scoutforgeListing(slug)` supply `href`+`src`. |
 
 ### Directory / launch embeds
 
@@ -205,11 +260,18 @@ Pass `className` or write more specific CSS when a host site needs a different d
 
 `FEATURED_BADGE_CATALOG` is a convenience default:
 
-- **Directory badges** — generic official badge images hosted by each directory.
-- **Curated reciprocal subset** — `DEFAULT_FEATURED_BADGE_IDS` may still reference a **reference product** listing URL. Treat as working examples; override with your own `badges` or a private `catalog` before production.
-- **Parameterized IDs** — providers such as PeerPush, FoundrList, Scout Forge, ListBulb, and Startup Base need **your** product slug / permalink in `href` (and sometimes `src`). Defaults point at the directory root or a public static badge so the package never invents private verification tokens.
+- **Directory badges** — generic official badge images hosted by each directory, with directory-root `href` values.
+- **Listing-bound ids** — `peerpush`, `foundrlist`, and `scoutforge` have no public product-agnostic badge image. Their catalog rows are stubs (`requiresListing: true`) and are **skipped** until `overrides` (or a private `catalog` / custom `badges`) supply your `href` + `src`. This prevents silently linking another product’s listing.
+- **Optional deep links** — providers such as TryLaunch, ufind, ListBulb, and Startup Base ship a safe directory default; override `href` with your slug/permalink when known.
+- The package never invents private verification tokens and never ships a sample product’s listing as a silent default.
 
 Badge **images are not vendored** in this package; `src` points at each directory’s public CDN/API. Directory trademarks remain with their owners. This package only redistributes link metadata and React rendering code (MIT).
+
+### Upgrading from ≤0.2.x
+
+1. Bump `@sherotree/featured-badge-list` after this release is published.
+2. If you selected `peerpush` / `foundrlist` / `scoutforge` by `ids` only, add `overrides` (or listing helpers) with **your** listing URLs — otherwise those three ids no longer render (by design).
+3. Republish / redeploy the consumer site. A library fix alone does not change already-deployed HTML.
 
 ## Package layout
 

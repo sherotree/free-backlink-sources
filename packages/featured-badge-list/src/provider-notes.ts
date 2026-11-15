@@ -36,8 +36,10 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
     name: 'PeerPush',
     site: 'https://peerpush.com/',
     requirement: 'optional-reciprocal',
-    onSite: 'Curated reciprocal badge; replace listing URL / badge image with your PeerPush product paths.',
-    supplyYourself: '`href` → `https://peerpush.com/p/{slug}`; `src` → `https://peerpush.com/p/{slug}/badge.png`',
+    onSite:
+      'Listing-bound: catalog stub is skipped until you pass `overrides` (or `peerpushListing(slug)`). Do not reuse another product’s PeerPush paths.',
+    supplyYourself:
+      '`overrides.peerpush` or `peerpushListing(slug)` → `href` `https://peerpush.com/p/{slug}`; `src` `https://peerpush.com/p/{slug}/badge.png`',
   },
   {
     id: 'neeed',
@@ -52,17 +54,19 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
     name: 'FoundrList',
     site: 'https://www.foundrlist.com/',
     requirement: 'optional-reciprocal',
-    onSite: 'Curated reciprocal badge; replace product slug in both `href` and `src`.',
+    onSite:
+      'Listing-bound: catalog stub is skipped until you pass `overrides` (or `foundrlistListing(slug)`).',
     supplyYourself:
-      '`href` → `https://www.foundrlist.com/product/{slug}?utm_source=badge&utm_medium=embed`; `src` → `https://www.foundrlist.com/api/badge/{slug}`',
+      '`overrides.foundrlist` or `foundrlistListing(slug)` → `href` `https://www.foundrlist.com/product/{slug}?utm_source=badge&utm_medium=embed`; `src` `https://www.foundrlist.com/api/badge/{slug}`',
   },
   {
     id: 'trylaunch',
     name: 'TryLaunch / Launch',
     site: 'https://trylaunch.ai/',
     requirement: 'optional-reciprocal',
-    onSite: 'Curated reciprocal badge; replace launch slug in `href` as needed.',
-    supplyYourself: '`href` → `https://trylaunch.ai/launch/{slug}`',
+    onSite:
+      'Generic Launch badge image ships by default (directory root `href`). Override `href` with your launch slug when known.',
+    supplyYourself: '`overrides.trylaunch.href` or `trylaunchListing(slug)` → `https://trylaunch.ai/launch/{slug}`',
   },
   {
     id: 'ufind',
@@ -73,7 +77,8 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
       'Free launch-week path requires an on-site badge/backlink. Do not confuse that with the directory’s own listing `rel` after launch week.',
     listingNote:
       'Directory listing is typically nofollow after the free launch week; top-3 lifetime dofollow is a separate listing outcome.',
-    supplyYourself: 'Prefer your product page in `href` (e.g. `https://ufind.best/products/{slug}`).',
+    supplyYourself:
+      'Prefer your product page via `overrides.ufind.href` or `ufindListing(slug)` (e.g. `https://ufind.best/products/{slug}`).',
     variants: 'Dark badge: `https://ufind.best/badges/ufind-best-badge-dark.svg`.',
   },
   {
@@ -89,9 +94,10 @@ export const FEATURED_BADGE_PROVIDER_NOTES = [
     name: 'Scout Forge',
     site: 'https://scoutforge.net/',
     requirement: 'optional-reciprocal',
-    onSite: 'Curated reciprocal badge; replace app slug in `href` / `src`.',
+    onSite:
+      'Listing-bound: catalog stub is skipped until you pass `overrides` (or `scoutforgeListing(slug)`).',
     supplyYourself:
-      '`href` → `https://scoutforge.net/apps/{slug}?ref=badge`; `src` → `https://scoutforge.net/badge/{slug}/image?theme=light&size=default`',
+      '`overrides.scoutforge` or `scoutforgeListing(slug)` → `href` `https://scoutforge.net/apps/{slug}?ref=badge`; `src` `https://scoutforge.net/badge/{slug}/image?theme=light&size=default`',
   },
   {
     id: 'startupfame',
