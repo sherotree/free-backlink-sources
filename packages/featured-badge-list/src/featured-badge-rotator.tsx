@@ -22,9 +22,9 @@ export type FeaturedBadgeRotatorProps = FeaturedBadgeSelectionProps & {
  * `"use client"` boundary is preserved. Import `styles.css` once for layout.
  */
 export function FeaturedBadgeRotator(props: FeaturedBadgeRotatorProps) {
-  const { ids, badges, catalog, className, intervalMs = DEFAULT_ROTATE_MS } = props;
+  const { ids, badges, catalog, overrides, className, intervalMs = DEFAULT_ROTATE_MS } = props;
   const ariaLabel = props['aria-label'] ?? 'Featured on communities and platforms';
-  const items = resolveFeaturedBadges({ ids, badges, catalog });
+  const items = resolveFeaturedBadges({ ids, badges, catalog, overrides });
   const selectionKey = items.map(badge => badge.id ?? badge.href).join('|');
   const [index, setIndex] = useState(0);
 

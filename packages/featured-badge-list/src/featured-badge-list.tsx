@@ -13,9 +13,9 @@ export type FeaturedBadgeListProps = FeaturedBadgeSelectionProps;
  * Server-safe. Import `@sherotree/featured-badge-list/styles.css` once for layout.
  */
 export function FeaturedBadgeList(props: FeaturedBadgeListProps) {
-  const { ids, badges, catalog, className } = props;
+  const { ids, badges, catalog, overrides, className } = props;
   const ariaLabel = props['aria-label'] ?? 'Featured on communities and platforms';
-  const items = resolveFeaturedBadges({ ids, badges, catalog });
+  const items = resolveFeaturedBadges({ ids, badges, catalog, overrides });
 
   if (items.length === 0) {
     return null;

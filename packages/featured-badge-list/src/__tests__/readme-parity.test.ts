@@ -46,7 +46,15 @@ describe('README ↔ catalog parity', () => {
   });
 
   it('documents shared selection props and rotator intervalMs', () => {
-    for (const prop of ['ids', 'badges', 'catalog', 'className', 'aria-label', 'intervalMs']) {
+    for (const prop of [
+      'ids',
+      'badges',
+      'catalog',
+      'overrides',
+      'className',
+      'aria-label',
+      'intervalMs',
+    ]) {
       expect(readme).toContain(`\`${prop}\``);
     }
     expect(readme).toContain('`4500`');
@@ -54,9 +62,16 @@ describe('README ↔ catalog parity', () => {
   });
 
   it('documents FeaturedBadgeItem fields', () => {
-    for (const field of ['id', 'href', 'src', 'alt', 'width', 'height', 'title']) {
+    for (const field of ['id', 'href', 'src', 'alt', 'width', 'height', 'title', 'requiresListing']) {
       expect(readme).toContain(`\`${field}\``);
     }
+  });
+
+  it('documents listing-bound safety and helpers', () => {
+    expect(readme).toContain('LISTING_REQUIRED_BADGE_IDS');
+    expect(readme).toContain('peerpushListing');
+    expect(readme).toContain('requiresListing');
+    expect(readme).toContain('never silently ships another product');
   });
 
   it('lists DEFAULT_FEATURED_BADGE_IDS members', () => {

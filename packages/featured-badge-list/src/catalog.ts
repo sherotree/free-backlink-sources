@@ -1,4 +1,9 @@
-import type { FeaturedBadgeCatalog, FeaturedBadgeDefinition, FeaturedBadgeItem } from './types';
+import type {
+  FeaturedBadgeCatalog,
+  FeaturedBadgeDefinition,
+  FeaturedBadgeItem,
+  FeaturedBadgeOverrides,
+} from './types';
 
 /**
  * Built-in reciprocal / directory badges.
@@ -7,19 +12,21 @@ import type { FeaturedBadgeCatalog, FeaturedBadgeDefinition, FeaturedBadgeItem }
  * Includes LaunchHub-style `badgeRequired` directory embeds (official badge assets
  * from each site) plus a curated reciprocal set useful as defaults/examples.
  *
- * Provenance: badge `src` URLs are publicly hosted by each directory. Some curated
- * `href`/`src` values still point at a reference product listing — replace them with
- * your own listing URLs before shipping to production. See README § Dataset.
+ * Provenance: badge `src` URLs are publicly hosted by each directory.
+ * Product-listing fields never ship another app’s slug — see `requiresListing`
+ * and the `overrides` prop. See README § Dataset.
  */
 export const FEATURED_BADGE_CATALOG = [
   // --- Curated reciprocal embeds ---
   {
     id: 'peerpush',
-    href: 'https://peerpush.com/p/ui-design-tools-directory',
-    src: 'https://peerpush.com/p/ui-design-tools-directory/badge.png',
-    alt: 'UI Design Tools Directory on PeerPush',
+    href: 'https://peerpush.com/',
+    // No public product-agnostic badge image; supply via overrides / listing helper.
+    src: 'https://peerpush.com/',
+    alt: 'Featured on PeerPush',
     width: 230,
     height: 54,
+    requiresListing: true,
   },
   {
     id: 'neeed',
@@ -31,15 +38,17 @@ export const FEATURED_BADGE_CATALOG = [
   },
   {
     id: 'foundrlist',
-    href: 'https://www.foundrlist.com/product/uwarp-2?utm_source=badge&utm_medium=embed',
-    src: 'https://www.foundrlist.com/api/badge/uwarp-2',
+    href: 'https://www.foundrlist.com/',
+    // Badge API is product-slug specific; supply via overrides / listing helper.
+    src: 'https://www.foundrlist.com/',
     alt: 'Featured on FoundrList',
     width: 150,
     height: 48,
+    requiresListing: true,
   },
   {
     id: 'trylaunch',
-    href: 'https://trylaunch.ai/launch/uwarp',
+    href: 'https://trylaunch.ai/',
     src: 'https://trylaunch.ai/badges/badge-white.png',
     alt: 'Featured on Launch',
     width: 180,
@@ -47,7 +56,7 @@ export const FEATURED_BADGE_CATALOG = [
   },
   {
     id: 'ufind',
-    href: 'https://ufind.best/products/free-ui-design-tools-directory',
+    href: 'https://ufind.best/',
     src: 'https://ufind.best/badges/ufind-best-badge-light.svg',
     alt: 'Featured on ufind.best',
     width: 150,
@@ -63,11 +72,13 @@ export const FEATURED_BADGE_CATALOG = [
   },
   {
     id: 'scoutforge',
-    href: 'https://scoutforge.net/apps/uwarp?ref=badge',
-    src: 'https://scoutforge.net/badge/uwarp/image?theme=light&size=default',
+    href: 'https://scoutforge.net/',
+    // Badge image API is app-slug specific; supply via overrides / listing helper.
+    src: 'https://scoutforge.net/',
     alt: 'Featured on Scout Forge',
     width: 240,
     height: 58,
+    requiresListing: true,
   },
 
   // --- LaunchHub badgeRequired directories (official site badges) ---
@@ -234,6 +245,7 @@ export const FEATURED_BADGE_IDS: readonly FeaturedBadgeId[] = FEATURED_BADGE_CAT
 /**
  * Default curated reciprocal set (subset of `FEATURED_BADGE_CATALOG`).
  * Prefer passing these via the `ids` prop so listing URLs stay easy to override.
+ * Listing-bound ids (`requiresListing`) are skipped until you pass `overrides`.
  */
 export const DEFAULT_FEATURED_BADGE_IDS = [
   'peerpush',
@@ -245,10 +257,18 @@ export const DEFAULT_FEATURED_BADGE_IDS = [
   'scoutforge',
 ] as const satisfies readonly FeaturedBadgeId[];
 
+/** Catalog ids that need a consumer product listing before they render. */
+export const LISTING_REQUIRED_BADGE_IDS = [
+  'peerpush',
+  'foundrlist',
+  'scoutforge',
+] as const satisfies readonly FeaturedBadgeId[];
+
 export type ResolveFeaturedBadgesOptions = {
   ids?: readonly string[];
   badges?: readonly FeaturedBadgeItem[];
   catalog?: FeaturedBadgeCatalog;
+  overrides?: FeaturedBadgeOverrides;
 };
 
 function catalogById(catalog: FeaturedBadgeCatalog): Map<string, FeaturedBadgeDefinition> {
@@ -259,19 +279,66 @@ function catalogById(catalog: FeaturedBadgeCatalog): Map<string, FeaturedBadgeDe
   return map;
 }
 
+function toBadgeItem(badge: FeaturedBadgeDefinition): FeaturedBadgeItem {
+  return {
+    id: badge.id,
+    href: badge.href,
+    src: badge.src,
+    alt: badge.alt,
+    width: badge.width,
+    height: badge.height,
+    title: badge.title,
+  };
+}
+
+function applyOverride(
+  badge: FeaturedBadgeDefinition,
+  overrides: FeaturedBadgeOverrides | undefined,
+): FeaturedBadgeItem {
+  const patch = overrides?.[badge.id];
+  if (!patch) {
+    return toBadgeItem(badge);
+  }
+  return {
+    ...toBadgeItem(badge),
+    ...patch,
+    id: badge.id,
+  };
+}
+
+function isListingSatisfied(
+  badge: FeaturedBadgeDefinition,
+  overrides: FeaturedBadgeOverrides | undefined,
+): boolean {
+  if (badge.requiresListing !== true) {
+    return true;
+  }
+  const patch = overrides?.[badge.id];
+  if (!patch) {
+    return false;
+  }
+  // A listing-bound stub needs an explicit product href and badge image.
+  return typeof patch.href === 'string' && typeof patch.src === 'string';
+}
+
 /**
  * Resolve display list from `ids` and/or custom `badges`.
  * Unknown ids are skipped (safe for forward-compatible embeds).
+ * Catalog rows with `requiresListing` are skipped unless `overrides[id]`
+ * supplies both `href` and `src` (explicit consumer listing wins).
  */
 export function resolveFeaturedBadges(
   options: ResolveFeaturedBadgesOptions = {},
 ): FeaturedBadgeItem[] {
-  const catalog = options.catalog ?? FEATURED_BADGE_CATALOG;
+  const catalog: FeaturedBadgeCatalog = options.catalog ?? FEATURED_BADGE_CATALOG;
   const custom = options.badges ?? [];
   const ids = options.ids;
+  const overrides = options.overrides;
 
   if (ids === undefined && custom.length === 0) {
-    return [...catalog];
+    return catalog
+      .filter(badge => isListingSatisfied(badge, overrides))
+      .map(badge => applyOverride(badge, overrides));
   }
 
   const resolved: FeaturedBadgeItem[] = [];
@@ -280,9 +347,13 @@ export function resolveFeaturedBadges(
     const byId = catalogById(catalog);
     for (const id of ids) {
       const badge = byId.get(id);
-      if (badge) {
-        resolved.push(badge);
+      if (!badge) {
+        continue;
       }
+      if (!isListingSatisfied(badge, overrides)) {
+        continue;
+      }
+      resolved.push(applyOverride(badge, overrides));
     }
   }
 
