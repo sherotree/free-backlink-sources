@@ -1,10 +1,10 @@
 # Free Backlink Sources
 
-Free and freemium places to submit a product: launch directories, tool directories, and a few high-traffic communities. 357 rows, regenerated from the LaunchHub export.
+Free and freemium places to submit a product: launch directories, tool directories, a few high-traffic communities, and press-release newswires. 357 directory and community rows regenerate from the LaunchHub export; the 8 press-release rows are hand-reviewed.
 
 **Live directory: [https://www.uwarp.design/launch](https://www.uwarp.design/launch)**
 
-Last synced 2026-11-05 · 338 free · 19 freemium · [launch-platforms.json](https://www.uwarp.design/launch-platforms.json)
+Last synced 2026-11-05 · 338 free · 19 freemium · 8 press release · [launch-platforms.json](https://www.uwarp.design/launch-platforms.json)
 
 ## Quick start
 
@@ -415,11 +415,30 @@ A free submit path exists. Paid skip-the-queue or featured placement is optional
 | [ToolFio](https://toolfio.com/) | Tool Directory | 63 | 167 | 25 | Freemium | Conditional | No | [Submit](https://toolfio.com/) |
 | [TheSaaSDir](https://thesaasdir.com/) | SaaS Directory | 67 | 60 | 23 | Freemium | ? | No | [Submit](https://thesaasdir.com/) |
 
+## Press Release (8)
+
+Newswires that publish company news. DR is supplied during review; these sites are not in the LaunchHub export, so they carry no traffic or score figure.
+
+`Free — verified` means a free submission path was confirmed by hand. `Free — pending verification` means the site advertises a free path, but acceptance and review strictness still need checking.
+
+| Provider | DR | Status | Submit |
+| --- | ---: | --- | --- |
+| [PRLog](https://prlog.org/) | 83 | Free — verified | [Submit](https://prlog.org/) |
+| [PRFree](https://prfree.org/) | 61 | Free — verified | [Submit](https://prfree.org/) |
+| [ARC Newswire](https://arcnewswire.com/) | 38 | Free — verified | [Submit](https://arcnewswire.com/) |
+| [PRBASE](https://prbase.org/) | 34 | Free — verified | [Submit](https://prbase.org/) |
+| [OpenPR](https://openpr.com/) | 83 | Free — pending verification | [Submit](https://openpr.com/) |
+| [PR.com](https://pr.com/) | 80 | Free — pending verification | [Submit](https://pr.com/) |
+| [IssueWire](https://issuewire.com/) | 77 | Free — pending verification | [Submit](https://issuewire.com/) |
+| [1888PressRelease](https://1888pressrelease.com/) | 66 | Free — pending verification | [Submit](https://1888pressrelease.com/) |
+
 ## Sync
 
 `.github/workflows/sync-from-launch.yml` rebuilds this file weekly from [https://www.uwarp.design/launch-platforms.json](https://www.uwarp.design/launch-platforms.json). Regenerate locally with `node scripts/sync-from-launch.mjs launch-platforms.json`.
 
 The sync keeps Free and Freemium rows with a score of 20 or higher. It drops GitHub lists, paid placements, and lower scores, and it refuses a recommended set under 300 rows. LaunchHub keeps those other lists separate.
+
+The **Press Release** table is hand-maintained in `scripts/press-release-sites.mjs` and is rendered unchanged on each sync.
 
 ## Credit
 

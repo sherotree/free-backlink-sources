@@ -16,6 +16,8 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import { PRESS_RELEASE_SITES } from "./press-release-sites.mjs";
+
 const FOLLOW_WEIGHT = { yes: 1, conditional: 0.3, unknown: 0.3, no: 0.3 };
 const LOW_SCORE = 20;
 const MIN_EXPORT_COUNT = 300;
@@ -225,6 +227,37 @@ function renderTable(platforms) {
   return [header, separator, ...rows].join("\n");
 }
 
+const PRESS_VERIFICATION_LABELS = {
+  verified: "Free — verified",
+  claimed: "Free — pending verification",
+};
+
+function pressReleaseRow(site) {
+  const cells = [
+    markdownLink(site.name, site.siteUrl),
+    formatDr(site.dr),
+    PRESS_VERIFICATION_LABELS[site.verification] ?? "?",
+    markdownLink("Submit", site.siteUrl),
+  ].map(escapeCell);
+  return `| ${cells.join(" | ")} |`;
+}
+
+function sortPressReleaseSites(sites) {
+  return [...sites].sort((a, b) => {
+    if (a.verification !== b.verification) {
+      return a.verification === "verified" ? -1 : 1;
+    }
+    return (Number(b.dr) || 0) - (Number(a.dr) || 0);
+  });
+}
+
+function renderPressReleaseTable(sites) {
+  const header = "| Provider | DR | Status | Submit |";
+  const separator = "| --- | ---: | --- | --- |";
+  const rows = sortPressReleaseSites(sites).map(pressReleaseRow);
+  return [header, separator, ...rows].join("\n");
+}
+
 function syncDate(meta, platforms) {
   const dates = platforms
     .map((platform) => String(platform.updatedAt ?? "").slice(0, 10))
@@ -238,15 +271,16 @@ function syncDate(meta, platforms) {
 function buildReadme(freePlatforms, freemiumPlatforms, meta, platforms) {
   const freeCount = freePlatforms.length;
   const freemiumCount = freemiumPlatforms.length;
+  const pressCount = PRESS_RELEASE_SITES.length;
   const synced = syncDate(meta, platforms);
 
   return `# Free Backlink Sources
 
-Free and freemium places to submit a product: launch directories, tool directories, and a few high-traffic communities. ${freeCount + freemiumCount} rows, regenerated from the LaunchHub export.
+Free and freemium places to submit a product: launch directories, tool directories, a few high-traffic communities, and press-release newswires. ${freeCount + freemiumCount} directory and community rows regenerate from the LaunchHub export; the ${pressCount} press-release rows are hand-reviewed.
 
 **Live directory: [${LAUNCH_URL}](${LAUNCH_URL})**
 
-Last synced ${synced} · ${freeCount} free · ${freemiumCount} freemium · [launch-platforms.json](${EXPORT_URL})
+Last synced ${synced} · ${freeCount} free · ${freemiumCount} freemium · ${pressCount} press release · [launch-platforms.json](${EXPORT_URL})
 
 ## Quick start
 
@@ -298,11 +332,21 @@ A free submit path exists. Paid skip-the-queue or featured placement is optional
 
 ${renderTable(freemiumPlatforms)}
 
+## Press Release (${pressCount})
+
+Newswires that publish company news. DR is supplied during review; these sites are not in the LaunchHub export, so they carry no traffic or score figure.
+
+\`Free — verified\` means a free submission path was confirmed by hand. \`Free — pending verification\` means the site advertises a free path, but acceptance and review strictness still need checking.
+
+${renderPressReleaseTable(PRESS_RELEASE_SITES)}
+
 ## Sync
 
 \`.github/workflows/sync-from-launch.yml\` rebuilds this file weekly from [${EXPORT_URL}](${EXPORT_URL}). Regenerate locally with \`node scripts/sync-from-launch.mjs launch-platforms.json\`.
 
 The sync keeps Free and Freemium rows with a score of ${LOW_SCORE} or higher. It drops GitHub lists, paid placements, and lower scores, and it refuses a recommended set under ${MIN_EXPORT_COUNT} rows. LaunchHub keeps those other lists separate.
+
+The **Press Release** table is hand-maintained in \`scripts/press-release-sites.mjs\` and is rendered unchanged on each sync.
 
 ## Credit
 
