@@ -16,12 +16,21 @@ export type FeaturedBadgeItem = {
 export type FeaturedBadgeDefinition = FeaturedBadgeItem & {
   id: string;
   /**
-   * When true, this row is a directory stub: product listing `href` / `src` /
-   * (usually) `alt` must come from consumer `overrides`, a private `catalog`,
-   * or a custom `badges` entry. Without that, `resolveFeaturedBadges` skips the
-   * id instead of shipping another product’s listing URLs.
+   * When true, this row is a directory stub that must not render until
+   * `overrides[id]` supplies both product listing `href` and badge `src`
+   * (or a private `catalog` / custom `badges` entry). Use this for
+   * product-slug-bound embeds — not for missing official badge artwork
+   * (those use `usesDefaultBadgeImage` + the package fallback image).
    */
   requiresListing?: boolean;
+  /**
+   * When true, the catalog has no verified official badge image for this
+   * directory. `resolveFeaturedBadges` substitutes the package's neutral
+   * default badge image (`DEFAULT_FEATURED_BADGE_IMAGE_SRC`) unless
+   * `overrides` (or a real `src`) supply one. The fallback is not an
+   * official provider badge.
+   */
+  usesDefaultBadgeImage?: boolean;
 };
 
 export type FeaturedBadgeCatalog = readonly FeaturedBadgeDefinition[];
