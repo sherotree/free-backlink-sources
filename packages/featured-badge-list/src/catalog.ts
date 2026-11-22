@@ -6,167 +6,266 @@ import type {
 } from './types';
 
 /**
- * Built-in reciprocal / directory badges.
- * Add new partners here; consumers select with `ids={[...]}`.
+ * Built-in reciprocal / directory badges for LaunchHub `badgeRequired` platforms.
+ * Regenerated from the local LaunchHub snapshot (platforms/*.ts including low-score).
+ * Universe = `badgeRequired: true` (需要回链). Not limited to the score>=20 README export.
  *
- * Includes LaunchHub-style `badgeRequired` directory embeds (official badge assets
- * from each site) plus a curated reciprocal set useful as defaults/examples.
- *
- * Provenance: badge `src` URLs are publicly hosted by each directory.
- * Product-listing fields never ship another app’s slug — see `requiresListing`
- * and the `overrides` prop. See README § Dataset.
+ * Badge `src` URLs are included only when a previously verified public directory
+ * asset is known. Rows without a source/package badge image are `requiresListing`
+ * stubs — consumers must pass `overrides` rather than inventing assets here.
  */
 export const FEATURED_BADGE_CATALOG = [
-  // --- Curated reciprocal embeds ---
   {
-    id: 'peerpush',
-    href: 'https://peerpush.com/',
-    // No public product-agnostic badge image; supply via overrides / listing helper.
-    src: 'https://peerpush.com/',
-    alt: 'Featured on PeerPush',
-    width: 230,
-    height: 54,
-    requiresListing: true,
-  },
-  {
-    id: 'neeed',
-    href: 'https://neeed.directory',
-    src: 'https://neeed.directory/badges/neeed-badge-light.svg',
-    alt: 'Featured on neeed.directory',
-    width: 139,
-    height: 54,
-  },
-  {
-    id: 'trylaunch',
-    href: 'https://trylaunch.ai/',
-    src: 'https://trylaunch.ai/badges/badge-white.png',
-    alt: 'Featured on Launch',
-    width: 180,
-    height: 53,
-  },
-  {
-    id: 'ufind',
-    href: 'https://ufind.best/',
-    src: 'https://ufind.best/badges/ufind-best-badge-light.svg',
-    alt: 'Featured on ufind.best',
-    width: 150,
-    height: 44,
-  },
-  {
-    id: 'twelve',
-    href: 'https://twelve.tools',
-    src: 'https://twelve.tools/badge0-white.svg',
-    alt: 'Featured on Twelve Tools',
-    width: 148,
-    height: 40,
-  },
-  {
-    id: 'scoutforge',
-    href: 'https://scoutforge.net/',
-    // Badge image API is app-slug specific; supply via overrides / listing helper.
-    src: 'https://scoutforge.net/',
-    alt: 'Featured on Scout Forge',
-    width: 240,
-    height: 58,
-    requiresListing: true,
-  },
-
-  // --- LaunchHub badgeRequired directories (official site badges) ---
-  {
-    id: 'startupfame',
-    href: 'https://startupfa.me/',
-    src: 'https://startupfa.me/badges/featured-badge-small.webp',
-    alt: 'Featured on Startup Fame',
-    width: 224,
-    height: 36,
-  },
-  {
-    id: 'fazier',
-    href: 'https://fazier.com/',
-    src: 'https://fazier.com/api/v1/public/badges/launch_badges.svg?badge_type=launched&theme=light',
-    alt: 'Featured on Fazier',
-    width: 103,
-    height: 44,
-  },
-  {
-    id: 'lovableapp',
-    href: 'https://lovableapp.org/',
-    src: 'https://lovableapp.org/lovable-app-badge.svg',
-    alt: 'Featured on Lovable APP',
-    width: 200,
-    height: 60,
-  },
-  {
-    id: 'launchigniter',
-    href: 'https://launchigniter.com/',
-    src: 'https://launchigniter.com/badge.svg',
-    alt: 'Featured on LaunchIgniter',
-    width: 250,
-    height: 54,
-  },
-  {
-    id: 'launchbuff',
-    href: 'https://launchbuff.com/',
-    src: 'https://launchbuff.com/badge-featured-light.svg',
-    alt: 'Featured on LaunchBuff',
-    width: 256,
-    height: 80,
-  },
-  {
-    id: 'startupfast',
-    href: 'https://startupfa.st/',
-    src: 'https://startupfa.st/badge-light.png',
-    alt: 'Featured on Startup Fast',
-    width: 200,
-    height: 79,
-  },
-  {
-    id: 'turbo0',
-    href: 'https://turbo0.com/',
-    src: 'https://img.turbo0.com/badge-listed-light.svg',
-    alt: 'Listed on Turbo0',
-    width: 200,
-    height: 67,
-  },
-  {
-    id: 'earlyhunt',
-    href: 'https://earlyhunt.com/',
-    src: 'https://earlyhunt.com/badges/earlyhunt-badge-light.svg',
-    alt: 'Featured on EarlyHunt',
+    id: "earlyhunt",
+    href: "https://earlyhunt.com/",
+    src: "https://earlyhunt.com/badges/earlyhunt-badge-light.svg",
+    alt: "Featured on EarlyHunt",
     width: 190,
     height: 58,
   },
   {
-    id: 'indiehunt',
-    href: 'https://indiehunt.io/',
-    src: 'https://indiehunt.io/badges/indiehunt-badge-light.svg',
-    alt: 'Featured on IndieHunt',
+    id: "fazier",
+    href: "https://fazier.com/",
+    src: "https://fazier.com/api/v1/public/badges/launch_badges.svg?badge_type=launched&theme=light",
+    alt: "Featured on Fazier",
+    width: 103,
+    height: 44,
+  },
+  {
+    id: "neeed",
+    href: "https://neeed.directory",
+    src: "https://neeed.directory/badges/neeed-badge-light.svg",
+    alt: "Featured on neeed.directory",
+    width: 139,
+    height: 54,
+  },
+  {
+    id: "twelve",
+    href: "https://twelve.tools",
+    src: "https://twelve.tools/badge0-white.svg",
+    alt: "Featured on Twelve Tools",
+    width: 148,
+    height: 40,
+  },
+  {
+    id: "turbo0",
+    href: "https://turbo0.com/",
+    src: "https://img.turbo0.com/badge-listed-light.svg",
+    alt: "Listed on Turbo0",
+    width: 200,
+    height: 67,
+  },
+  {
+    id: "ufind",
+    href: "https://ufind.best/",
+    src: "https://ufind.best/badges/ufind-best-badge-light.svg",
+    alt: "Featured on ufind.best",
+    width: 150,
+    height: 44,
+  },
+  {
+    id: "indiehunt",
+    href: "https://indiehunt.io/",
+    src: "https://indiehunt.io/badges/indiehunt-badge-light.svg",
+    alt: "Featured on IndieHunt",
     width: 200,
     height: 58,
   },
   {
-    id: 'sumodir',
-    href: 'https://sumodir.com/',
-    src: 'https://sumodir.com/badge.png',
-    alt: 'Featured on SumoDir',
+    id: "launchbuff",
+    href: "https://launchbuff.com/",
+    src: "https://launchbuff.com/badge-featured-light.svg",
+    alt: "Featured on LaunchBuff",
+    width: 256,
+    height: 80,
+  },
+  {
+    id: "launchigniter",
+    href: "https://launchigniter.com/",
+    src: "https://launchigniter.com/badge.svg",
+    alt: "Featured on LaunchIgniter",
+    width: 250,
+    height: 54,
+  },
+  {
+    id: "lovableapp",
+    href: "https://lovableapp.org/",
+    src: "https://lovableapp.org/lovable-app-badge.svg",
+    alt: "Featured on Lovable APP",
+    width: 200,
+    height: 60,
+  },
+  {
+    id: "startupfame",
+    href: "https://startupfa.me/",
+    src: "https://startupfa.me/badges/featured-badge-small.webp",
+    alt: "Featured on Startup Fame",
+    width: 224,
+    height: 36,
+  },
+  {
+    id: "startupfast",
+    href: "https://startupfa.st/",
+    src: "https://startupfa.st/badge-light.png",
+    alt: "Featured on Startup Fast",
+    width: 200,
+    height: 79,
+  },
+  {
+    id: "sumodir",
+    href: "https://sumodir.com/",
+    src: "https://sumodir.com/badge.png",
+    alt: "Featured on SumoDir",
     width: 200,
     height: 54,
   },
   {
-    id: 'yodirectory',
-    href: 'https://yo.directory/',
-    src: 'https://yo.directory/badges/yo-directory-featured-light.svg',
-    alt: 'Featured on yo.directory',
+    id: "yodirectory",
+    href: "https://yo.directory/",
+    src: "https://yo.directory/badges/yo-directory-featured-light.svg",
+    alt: "Featured on yo.directory",
     width: 200,
     height: 72,
   },
   {
-    id: 'startupbase',
-    href: 'https://startupbase.io/',
-    src: 'https://statics.startupbase.io/site/badges/launched-on-sb.svg',
-    alt: 'Launched on StartupBase',
-    width: 206,
-    height: 55,
+    id: "aijustbetter",
+    href: "https://aijustbetter.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://aijustbetter.com/",
+    alt: "Featured on AI Just Better",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "basedtools",
+    href: "https://basedtools.ai/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://basedtools.ai/",
+    alt: "Featured on Basedtools",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "dangai",
+    href: "https://dang.ai/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://dang.ai/",
+    alt: "Featured on Dang AI",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "dokeyai",
+    href: "https://dokeyai.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://dokeyai.com/",
+    alt: "Featured on DokeyAI",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "findalternative",
+    href: "https://findalternative.to/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://findalternative.to/",
+    alt: "Featured on FindAlternative",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "firstlook",
+    href: "https://firstlook.tools/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://firstlook.tools/",
+    alt: "Featured on Firstlook",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "gets",
+    href: "https://gets.tools/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://gets.tools/",
+    alt: "Featured on Gets",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "hunt0",
+    href: "https://hunt0.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://hunt0.com/",
+    alt: "Featured on Hunt0",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "mossai",
+    href: "https://mossai.org/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://mossai.org/",
+    alt: "Featured on MossAI",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "productfame",
+    href: "https://productfame.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://productfame.com/",
+    alt: "Featured on ProductFame",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "tinyhunt",
+    href: "https://tinyhunt.dev/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://tinyhunt.dev/",
+    alt: "Featured on Tinyhunt",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "tooldirs",
+    href: "https://tooldirs.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://tooldirs.com/",
+    alt: "Featured on Tooldirs",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "toolpilot",
+    href: "https://toolpilot.ai/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://toolpilot.ai/",
+    alt: "Featured on Toolpilot",
+    width: 200,
+    height: 54,
+    requiresListing: true,
+  },
+  {
+    id: "topaihubs",
+    href: "https://topaihubs.com/",
+    // LaunchHub has no badge image URL; supply via overrides.
+    src: "https://topaihubs.com/",
+    alt: "Featured on Topaihubs",
+    width: 200,
+    height: 54,
+    requiresListing: true,
   },
 ] as const satisfies FeaturedBadgeCatalog;
 
@@ -177,23 +276,34 @@ export const FEATURED_BADGE_IDS: readonly FeaturedBadgeId[] = FEATURED_BADGE_CAT
 );
 
 /**
- * Default curated reciprocal set (subset of `FEATURED_BADGE_CATALOG`).
- * Prefer passing these via the `ids` prop so listing URLs stay easy to override.
+ * Default curated reciprocal set (subset of renderable `FEATURED_BADGE_CATALOG` rows).
  * Listing-bound ids (`requiresListing`) are skipped until you pass `overrides`.
  */
 export const DEFAULT_FEATURED_BADGE_IDS = [
-  'peerpush',
-  'neeed',
-  'trylaunch',
-  'ufind',
-  'twelve',
-  'scoutforge',
+  "earlyhunt",
+  "fazier",
+  "neeed",
+  "twelve",
+  "turbo0",
+  "ufind",
 ] as const satisfies readonly FeaturedBadgeId[];
 
-/** Catalog ids that need a consumer product listing before they render. */
+/** Catalog ids that need a consumer-supplied badge image before they render. */
 export const LISTING_REQUIRED_BADGE_IDS = [
-  'peerpush',
-  'scoutforge',
+  "aijustbetter",
+  "basedtools",
+  "dangai",
+  "dokeyai",
+  "findalternative",
+  "firstlook",
+  "gets",
+  "hunt0",
+  "mossai",
+  "productfame",
+  "tinyhunt",
+  "tooldirs",
+  "toolpilot",
+  "topaihubs",
 ] as const satisfies readonly FeaturedBadgeId[];
 
 export type ResolveFeaturedBadgesOptions = {
