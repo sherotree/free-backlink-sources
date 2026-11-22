@@ -18,7 +18,9 @@ import { resolve } from "node:path";
 
 const FOLLOW_WEIGHT = { yes: 1, conditional: 0.3, unknown: 0.3, no: 0.3 };
 const LOW_SCORE = 20;
-const MIN_EXPORT_COUNT = 300;
+// Floor for the recommended Free/Freemium set after LaunchHub modular cleanup.
+// Still blocks tiny/stale exports (historically ~140) from overwriting the README.
+const MIN_EXPORT_COUNT = 200;
 const CATEGORY_ACRONYMS = { ai: "AI", saas: "SaaS", seo: "SEO", ux: "UX", ui: "UI" };
 
 const README_PATH = resolve(process.cwd(), "README.md");
@@ -105,8 +107,16 @@ function formatBadge(value) {
 }
 
 function formatDofollow(platform) {
-  if (platform.dofollowLabel != null && String(platform.dofollowLabel).trim() !== "") {
-    return String(platform.dofollowLabel).trim();
+  // Normalize export labels ("Dofollow", "Unknown follow") to README vocabulary.
+  const label = platform.dofollowLabel != null ? String(platform.dofollowLabel).trim() : "";
+  if (label) {
+    const normalized = label.toLowerCase();
+    if (normalized === "yes" || normalized === "dofollow") return "Yes";
+    if (normalized === "nofollow" || normalized === "no") return "Nofollow";
+    if (normalized === "conditional") return "Conditional";
+    if (normalized === "unknown" || normalized === "unknown follow" || normalized === "?") {
+      return "?";
+    }
   }
   const status = platform.dofollowStatus;
   if (status == null || status === "") return "?";
