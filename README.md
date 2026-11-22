@@ -1,1 +1,1 @@
-file:///tmp/README_FOR_MCP.md
+@/tmp/README_FOR_MCP.md
