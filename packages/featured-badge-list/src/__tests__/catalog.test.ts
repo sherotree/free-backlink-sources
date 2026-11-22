@@ -19,16 +19,32 @@ describe('FEATURED_BADGE_CATALOG', () => {
     expect(FEATURED_BADGE_IDS).toEqual(FEATURED_BADGE_CATALOG.map(badge => badge.id));
   });
 
-  it('includes the newly confirmed badge providers', () => {
-    for (const id of ['sumodir', 'yodirectory', 'startupbase'] as const) {
+  it('includes LaunchHub badgeRequired providers with known public assets', () => {
+    for (const id of ['sumodir', 'yodirectory', 'twelve', 'ufind'] as const) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
+      expect(getFeaturedBadge(id)?.requiresListing).not.toBe(true);
+    }
+  });
+
+  it('marks missing-asset LaunchHub badgeRequired rows as listing stubs', () => {
+    for (const id of ['dangai', 'productfame', 'hunt0'] as const) {
+      expect(getFeaturedBadge(id)?.requiresListing).toBe(true);
     }
   });
 
   it('keeps DEFAULT_FEATURED_BADGE_IDS as a known subset', () => {
     for (const id of DEFAULT_FEATURED_BADGE_IDS) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
+      expect(getFeaturedBadge(id)?.requiresListing).not.toBe(true);
     }
+  });
+
+  it('aligns LISTING_REQUIRED_BADGE_IDS with requiresListing rows', () => {
+    expect([...LISTING_REQUIRED_BADGE_IDS].sort()).toEqual(
+      FEATURED_BADGE_CATALOG.filter(badge => badge.requiresListing)
+        .map(badge => badge.id)
+        .sort(),
+    );
   });
 });
 
@@ -79,13 +95,13 @@ describe('resolveFeaturedBadges', () => {
 
   it('merges overrides onto catalog matches with explicit fields winning', () => {
     const resolved = resolveFeaturedBadges({
-      ids: ['twelve', 'peerpush'],
+      ids: ['twelve', 'dangai'],
       overrides: {
         twelve: { href: 'https://twelve.tools/my-tool' },
-        peerpush: {
-          href: 'https://peerpush.com/p/my-app',
-          src: 'https://peerpush.com/p/my-app/badge.png',
-          alt: 'My App on PeerPush',
+        dangai: {
+          href: 'https://dang.ai/my-app',
+          src: 'https://dang.ai/badge.svg',
+          alt: 'My App on Dang AI',
         },
       },
     });
@@ -97,29 +113,24 @@ describe('resolveFeaturedBadges', () => {
       alt: 'Featured on Twelve Tools',
     });
     expect(resolved[1]).toMatchObject({
-      id: 'peerpush',
-      href: 'https://peerpush.com/p/my-app',
-      src: 'https://peerpush.com/p/my-app/badge.png',
-      alt: 'My App on PeerPush',
+      id: 'dangai',
+      href: 'https://dang.ai/my-app',
+      src: 'https://dang.ai/badge.svg',
+      alt: 'My App on Dang AI',
     });
   });
 
   it('does not treat a partial listing override as enough for requiresListing ids', () => {
     const resolved = resolveFeaturedBadges({
-      ids: ['peerpush'],
-      overrides: { peerpush: { href: 'https://peerpush.com/p/my-app' } },
+      ids: ['dangai'],
+      overrides: { dangai: { href: 'https://dang.ai/my-app' } },
     });
     expect(resolved).toEqual([]);
   });
 });
 
 describe('DEFAULT_FEATURED_BADGES', () => {
-  it('resolves only non-listing-bound default ids without overrides', () => {
-    expect(DEFAULT_FEATURED_BADGES.map(badge => badge.id)).toEqual([
-      'neeed',
-      'trylaunch',
-      'ufind',
-      'twelve',
-    ]);
+  it('resolves default ids without overrides (all defaults are renderable)', () => {
+    expect(DEFAULT_FEATURED_BADGES.map(badge => badge.id)).toEqual([...DEFAULT_FEATURED_BADGE_IDS]);
   });
 });
