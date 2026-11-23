@@ -4,6 +4,13 @@ import type {
   FeaturedBadgeItem,
   FeaturedBadgeOverrides,
 } from './types';
+import {
+  DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+  DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+  DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+  needsDefaultBadgeImage,
+} from './default-badge-image';
+
 
 /**
  * Built-in reciprocal / directory badges for LaunchHub `badgeRequired` platforms.
@@ -11,8 +18,9 @@ import type {
  * Universe = `badgeRequired: true` (需要回链). Not limited to the score>=20 README export.
  *
  * Badge `src` URLs are included only when a previously verified public directory
- * asset is known. Rows without a source/package badge image are `requiresListing`
- * stubs — consumers must pass `overrides` rather than inventing assets here.
+ * asset is known. Rows without an official badge image use
+ * `usesDefaultBadgeImage` + the neutral package fallback (`DEFAULT_FEATURED_BADGE_IMAGE_SRC`).
+ * Override `src` with a verified directory asset when you have one.
  */
 export const FEATURED_BADGE_CATALOG = [
   {
@@ -130,142 +138,142 @@ export const FEATURED_BADGE_CATALOG = [
   {
     id: "aijustbetter",
     href: "https://aijustbetter.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://aijustbetter.com/",
-    alt: "Featured on AI Just Better",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: AI Just Better (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "basedtools",
     href: "https://basedtools.ai/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://basedtools.ai/",
-    alt: "Featured on Basedtools",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Basedtools (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "dangai",
     href: "https://dang.ai/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://dang.ai/",
-    alt: "Featured on Dang AI",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Dang AI (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "dokeyai",
     href: "https://dokeyai.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://dokeyai.com/",
-    alt: "Featured on DokeyAI",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: DokeyAI (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "findalternative",
     href: "https://findalternative.to/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://findalternative.to/",
-    alt: "Featured on FindAlternative",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: FindAlternative (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "firstlook",
     href: "https://firstlook.tools/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://firstlook.tools/",
-    alt: "Featured on Firstlook",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Firstlook (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "gets",
     href: "https://gets.tools/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://gets.tools/",
-    alt: "Featured on Gets",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Gets (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "hunt0",
     href: "https://hunt0.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://hunt0.com/",
-    alt: "Featured on Hunt0",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Hunt0 (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "mossai",
     href: "https://mossai.org/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://mossai.org/",
-    alt: "Featured on MossAI",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: MossAI (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "productfame",
     href: "https://productfame.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://productfame.com/",
-    alt: "Featured on ProductFame",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: ProductFame (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "tinyhunt",
     href: "https://tinyhunt.dev/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://tinyhunt.dev/",
-    alt: "Featured on Tinyhunt",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Tinyhunt (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "tooldirs",
     href: "https://tooldirs.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://tooldirs.com/",
-    alt: "Featured on Tooldirs",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Tooldirs (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "toolpilot",
     href: "https://toolpilot.ai/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://toolpilot.ai/",
-    alt: "Featured on Toolpilot",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Toolpilot (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
   {
     id: "topaihubs",
     href: "https://topaihubs.com/",
-    // LaunchHub has no badge image URL; supply via overrides.
-    src: "https://topaihubs.com/",
-    alt: "Featured on Topaihubs",
-    width: 200,
-    height: 54,
-    requiresListing: true,
+    // No official badge image in LaunchHub — neutral package fallback (not a provider badge).
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    alt: "Directory link: Topaihubs (generic badge)",
+    width: DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+    usesDefaultBadgeImage: true,
   },
 ] as const satisfies FeaturedBadgeCatalog;
 
@@ -276,8 +284,8 @@ export const FEATURED_BADGE_IDS: readonly FeaturedBadgeId[] = FEATURED_BADGE_CAT
 );
 
 /**
- * Default curated reciprocal set (subset of renderable `FEATURED_BADGE_CATALOG` rows).
- * Listing-bound ids (`requiresListing`) are skipped until you pass `overrides`.
+ * Default curated reciprocal set (subset of `FEATURED_BADGE_CATALOG`).
+ * Prefer ids with verified official badge assets for the common footer set.
  */
 export const DEFAULT_FEATURED_BADGE_IDS = [
   "earlyhunt",
@@ -288,23 +296,21 @@ export const DEFAULT_FEATURED_BADGE_IDS = [
   "ufind",
 ] as const satisfies readonly FeaturedBadgeId[];
 
-/** Catalog ids that need a consumer-supplied badge image before they render. */
-export const LISTING_REQUIRED_BADGE_IDS = [
-  "aijustbetter",
-  "basedtools",
-  "dangai",
-  "dokeyai",
-  "findalternative",
-  "firstlook",
-  "gets",
-  "hunt0",
-  "mossai",
-  "productfame",
-  "tinyhunt",
-  "tooldirs",
-  "toolpilot",
-  "topaihubs",
-] as const satisfies readonly FeaturedBadgeId[];
+/**
+ * Catalog ids that still require consumer listing `href`+`src` before render
+ * (product-slug-bound embeds). Empty after the badgeRequired sync — kept for API stability.
+ */
+export const LISTING_REQUIRED_BADGE_IDS = [] as const satisfies readonly FeaturedBadgeId[];
+
+/**
+ * Catalog ids that ship the neutral package fallback image (not an official
+ * provider badge). Derived from `usesDefaultBadgeImage` so future regenerations
+ * stay accurate without hand-maintaining this list.
+ */
+export const DEFAULT_BADGE_IMAGE_IDS: readonly FeaturedBadgeId[] = FEATURED_BADGE_CATALOG.filter(
+  (badge): boolean =>
+    (badge as FeaturedBadgeDefinition).usesDefaultBadgeImage === true,
+).map(badge => badge.id);
 
 export type ResolveFeaturedBadgesOptions = {
   ids?: readonly string[];
@@ -321,14 +327,32 @@ function catalogById(catalog: FeaturedBadgeCatalog): Map<string, FeaturedBadgeDe
   return map;
 }
 
+function resolveImageFields(badge: FeaturedBadgeDefinition): Pick<FeaturedBadgeItem, 'src' | 'width' | 'height'> {
+  const useDefault =
+    badge.usesDefaultBadgeImage === true || needsDefaultBadgeImage(badge.src);
+  if (!useDefault) {
+    return {
+      src: badge.src,
+      width: badge.width,
+      height: badge.height,
+    };
+  }
+  return {
+    src: DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+    width: badge.width ?? DEFAULT_FEATURED_BADGE_IMAGE_WIDTH,
+    height: badge.height ?? DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT,
+  };
+}
+
 function toBadgeItem(badge: FeaturedBadgeDefinition): FeaturedBadgeItem {
+  const image = resolveImageFields(badge);
   return {
     id: badge.id,
     href: badge.href,
-    src: badge.src,
+    src: image.src,
     alt: badge.alt,
-    width: badge.width,
-    height: badge.height,
+    width: image.width,
+    height: image.height,
     title: badge.title,
   };
 }
@@ -337,15 +361,23 @@ function applyOverride(
   badge: FeaturedBadgeDefinition,
   overrides: FeaturedBadgeOverrides | undefined,
 ): FeaturedBadgeItem {
+  const base = toBadgeItem(badge);
   const patch = overrides?.[badge.id];
   if (!patch) {
-    return toBadgeItem(badge);
+    return base;
   }
-  return {
-    ...toBadgeItem(badge),
+  const merged: FeaturedBadgeItem = {
+    ...base,
     ...patch,
     id: badge.id,
   };
+  // If the consumer did not supply a real image, keep/restore the package fallback.
+  if (needsDefaultBadgeImage(merged.src)) {
+    merged.src = DEFAULT_FEATURED_BADGE_IMAGE_SRC;
+    merged.width = merged.width ?? DEFAULT_FEATURED_BADGE_IMAGE_WIDTH;
+    merged.height = merged.height ?? DEFAULT_FEATURED_BADGE_IMAGE_HEIGHT;
+  }
+  return merged;
 }
 
 function isListingSatisfied(
@@ -359,15 +391,17 @@ function isListingSatisfied(
   if (!patch) {
     return false;
   }
-  // A listing-bound stub needs an explicit product href and badge image.
-  return typeof patch.href === 'string' && typeof patch.src === 'string';
+  // Product-slug-bound stubs still need an explicit listing href and badge image.
+  return typeof patch.href === 'string' && typeof patch.src === 'string' && !needsDefaultBadgeImage(patch.src);
 }
 
 /**
  * Resolve display list from `ids` and/or custom `badges`.
  * Unknown ids are skipped (safe for forward-compatible embeds).
- * Catalog rows with `requiresListing` are skipped unless `overrides[id]`
- * supplies both `href` and `src` (explicit consumer listing wins).
+ * Rows with `usesDefaultBadgeImage` (or a non-image `src`) render with the
+ * neutral package fallback unless `overrides` supply a real badge image.
+ * Rows with `requiresListing` are skipped unless `overrides[id]` supplies
+ * both listing `href` and a real badge `src`.
  */
 export function resolveFeaturedBadges(
   options: ResolveFeaturedBadgesOptions = {},
