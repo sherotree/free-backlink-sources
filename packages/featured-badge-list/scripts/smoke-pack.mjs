@@ -85,6 +85,10 @@ assert.ok(!rotatorBlock.includes('padding-top: 0.5rem;'));
 assert.ok(FEATURED_BADGE_CATALOG.length > 0);
 const items = resolveFeaturedBadges({ ids: DEFAULT_FEATURED_BADGE_IDS });
 assert.equal(items.length, DEFAULT_FEATURED_BADGE_IDS.length);
+const all = resolveFeaturedBadges();
+assert.equal(all.length, FEATURED_BADGE_CATALOG.length);
+assert.ok(all.every(badge => typeof badge.src === 'string' && badge.src.length > 0));
+assert.ok(all.some(badge => badge.src.startsWith('data:image/svg+xml')));
 
 const listHtml = renderToStaticMarkup(
   createElement(FeaturedBadgeList, { ids: DEFAULT_FEATURED_BADGE_IDS }),
