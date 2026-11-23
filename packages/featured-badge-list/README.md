@@ -52,8 +52,8 @@ export function FooterBadges() {
       ids={[...DEFAULT_FEATURED_BADGE_IDS, 'dangai']}
       overrides={{
         ufind: { href: ufind.href, src: ufind.src, alt: ufind.alt },
-        // Listing stub: LaunchHub has no badge image URL — supply a verified asset yourself.
-        dangai: { href: 'https://dang.ai/', src: 'https://example.com/your-verified-dang-badge.svg', alt: 'Featured on Dang AI' },
+        // Optional: replace the neutral fallback with a verified official badge asset.
+        dangai: { src: 'https://example.com/your-verified-dang-badge.svg', alt: 'Featured on Dang AI' },
       }}
     />
   );
@@ -106,7 +106,7 @@ export { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 - A **required dofollow backlink on your site** is not the same thing as a directory promising a **dofollow listing** on *their* page.
 - Rendering a badge from this catalog does **not** mean your product is approved, verified, or listed.
 - This package is **not affiliated with or approved by** any listed directory. Trademarks belong to their owners.
-- Defaults use **generic** directory URLs / public badge assets only. Product listing `href` / `src` / product-named `alt` must come from **your** `overrides` (or a private `catalog` / custom `badges`). The package never silently ships another product’s listing.
+- Defaults use **generic** directory URLs / public badge assets only. Product listing `href` / `src` / product-named `alt` must come from **your** `overrides` (or a private `catalog` / custom `badges`). The package never silently ships another product's listing.
 - Do not copy private campaign URLs from sample sites.
 
 ## API
@@ -128,12 +128,12 @@ Resolution rules:
 - `ids` only → catalog matches (same listing-bound skip rule)
 - `badges` only → those items
 - both → catalog matches first, then custom badges
-- `overrides` → shallow-merge onto catalog matches by id; for `requiresListing` ids both `href` and `src` must be present in the override or the id is skipped
+- `overrides` → shallow-merge onto catalog matches by id (explicit wins). Missing/non-image `src` values fall back to the neutral package badge image. For `requiresListing` ids both listing `href` and a real badge `src` must be present or the id is skipped
 
 ### `FeaturedBadgeItem` / catalog entry fields
 
 | Field | Type | Required | Default | Description |
-| --- | --- | --- | --- | --- |
+| --- | --- | --- | --- |
 | `id` | `string` | catalog yes / custom optional | — | Stable key for `ids={[...]}` selection |
 | `href` | `string` | yes | — | Anchor URL (usually the directory or your listing page) |
 | `src` | `string` | yes | — | Badge image URL (hosted by the directory) |
@@ -141,7 +141,8 @@ Resolution rules:
 | `width` | `number` | no | — | `<img width>` |
 | `height` | `number` | no | — | `<img height>` |
 | `title` | `string` | no | falls back to `alt` | Anchor `title` |
-| `requiresListing` | `boolean` | catalog only | — | When true, skipped until `overrides[id]` supplies `href` + `src` |
+| `requiresListing` | `boolean` | catalog only | — | When true, skipped until `overrides[id]` supplies listing `href` + real badge `src` |
+| `usesDefaultBadgeImage` | `boolean` | catalog only | — | When true (or `src` is not an image URL), render the neutral package fallback unless overridden |
 
 ### `FeaturedBadgeRotator` (preferred)
 
@@ -167,6 +168,8 @@ import {
   FEATURED_BADGE_IDS,
   DEFAULT_FEATURED_BADGE_IDS,
   DEFAULT_FEATURED_BADGES,
+  DEFAULT_BADGE_IMAGE_IDS,
+  DEFAULT_FEATURED_BADGE_IMAGE_SRC,
   LISTING_REQUIRED_BADGE_IDS,
   FEATURED_BADGE_PROVIDER_NOTES,
   FEATURED_BADGE_PROVIDER_NOTES_BY_ID,
@@ -184,8 +187,10 @@ import {
 | `FEATURED_BADGE_CATALOG` | `readonly FeaturedBadgeDefinition[]` | Built-in embeds (directory-safe defaults) |
 | `FEATURED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | All selectable keys in catalog order |
 | `DEFAULT_FEATURED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | Curated reciprocal subset |
-| `DEFAULT_FEATURED_BADGES` | `FeaturedBadgeItem[]` | Resolved defaults **without** overrides (listing-bound ids omitted) |
-| `LISTING_REQUIRED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | Ids that need `overrides` (no verified public badge asset in LaunchHub source) |
+| `DEFAULT_FEATURED_BADGES` | `FeaturedBadgeItem[]` | Resolved defaults **without** overrides |
+| `LISTING_REQUIRED_BADGE_IDS` | `readonly FeaturedBadgeId[]` | Product-slug-bound ids that still skip until `overrides` supply listing `href`+`src` (currently empty) |
+| `DEFAULT_BADGE_IMAGE_IDS` | `readonly FeaturedBadgeId[]` | Ids that render with the neutral package fallback image |
+| `DEFAULT_FEATURED_BADGE_IMAGE_SRC` | `string` (data URL) | Neutral SVG fallback — not an official provider badge |
 | `FEATURED_BADGE_PROVIDER_NOTES` | notes array | Requirement / usage notes per id |
 | `getFeaturedBadge(id)` | `FeaturedBadgeDefinition \| undefined` | Lookup one catalog entry |
 | `resolveFeaturedBadges(options)` | `FeaturedBadgeItem[]` | Same resolution rules as the components |
@@ -220,20 +225,20 @@ Machine-readable markers below (`catalog-id:<id>`) are asserted by unit tests so
 | <!-- catalog-id:startupfast --> `startupfast` | Startupfa | required for free | Free path requires an on-site badge/backlink (LaunchHub `badgeRequired`). |
 | <!-- catalog-id:sumodir --> `sumodir` | SumoDir | required for free | Two different links: (1) Free listing requires you to place a site badge and a dofollow backlink to SumoDir on your homepage or footer, verified before the form. (2) Official Fr… |
 | <!-- catalog-id:yodirectory --> `yodirectory` | yo.directory | required for free | Free plan requires a live website backlink to yo.directory (the listing stays live while the link stays live). Dofollow of that backlink and of the listing link is unconfirmed. … |
-| <!-- catalog-id:aijustbetter --> `aijustbetter` | AI Just Better | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:basedtools --> `basedtools` | Basedtools | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:dangai --> `dangai` | Dang AI | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:dokeyai --> `dokeyai` | DokeyAI | required for free | Free pack: add the partner footer link, then the site can be approved. Review is described as about 48 hours. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:findalternative --> `findalternative` | FindAlternative | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:firstlook --> `firstlook` | Firstlook | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:gets --> `gets` | Gets | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:hunt0 --> `hunt0` | Hunt0 | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:mossai --> `mossai` | MossAI | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:productfame --> `productfame` | ProductFame | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:tinyhunt --> `tinyhunt` | Tinyhunt | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:tooldirs --> `tooldirs` | Tooldirs | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:toolpilot --> `toolpilot` | Toolpilot | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
-| <!-- catalog-id:topaihubs --> `topaihubs` | Topaihubs | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. **Listing stub** — needs `overrides` `href`+`src`. |
+| <!-- catalog-id:aijustbetter --> `aijustbetter` | AI Just Better | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:basedtools --> `basedtools` | Basedtools | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:dangai --> `dangai` | Dang AI | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:dokeyai --> `dokeyai` | DokeyAI | required for free | Free pack: add the partner footer link, then the site can be approved. Review is described as about 48 hours. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:findalternative --> `findalternative` | FindAlternative | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:firstlook --> `firstlook` | Firstlook | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:gets --> `gets` | Gets | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:hunt0 --> `hunt0` | Hunt0 | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:mossai --> `mossai` | MossAI | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:productfame --> `productfame` | ProductFame | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:tinyhunt --> `tinyhunt` | Tinyhunt | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:tooldirs --> `tooldirs` | Tooldirs | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:toolpilot --> `toolpilot` | Toolpilot | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
+| <!-- catalog-id:topaihubs --> `topaihubs` | Topaihubs | required for free | LaunchHub marks `badgeRequired: true`, but this snapshot has no official badge image URL. Catalog row is a listing stub until you pass `overrides` with a verified `href` + `src`. Uses neutral package fallback image (not official); override `src` when you have a verified asset. |
 
 ### Requirement legend
 
@@ -258,16 +263,16 @@ Pass `className` or write more specific CSS when a host site needs a different d
 
 - **Universe** — every platform with `badgeRequired: true` (需要回链), including `platforms/low-score.ts`. This is independent of the README score>=20 Free/Freemium export.
 - **Directory badges with known public assets** — generic official badge images hosted by each directory, with directory-root `href` values (reused only when previously verified; not invented from missing source fields).
-- **Listing / missing-asset stubs** — LaunchHub has no badge-image URL field. When no verified public asset is known, the row is `requiresListing: true` and is **skipped** until `overrides` supply your `href` + `src`.
+- **Missing official badge images** — LaunchHub has no badge-image URL field. Those rows set `usesDefaultBadgeImage` and render a **neutral package fallback** (`DEFAULT_FEATURED_BADGE_IMAGE_SRC`, labeled "LISTED / generic badge"). That graphic is **not** an official provider badge. Override `src` (and optionally `href`) when you have a verified directory asset or product listing URL.
 - **Removed from prior catalog** — providers that are not `badgeRequired` in the snapshot (for example PeerPush, Scout Forge, TryLaunch, Startup Base standard free queue) are no longer catalog defaults. Slug helpers for some of those providers remain exported for custom embeds.
-- The package never invents private verification tokens and never ships a sample product’s listing as a silent default.
+- The package never invents private verification tokens and never ships a sample product's listing as a silent default.
 
-Badge **images are not vendored** in this package; `src` points at each directory’s public CDN/API when known. Directory trademarks remain with their owners. This package only redistributes link metadata and React rendering code (MIT).
+Badge **images are not vendored** in this package; `src` points at each directory's public CDN/API when known. Directory trademarks remain with their owners. This package only redistributes link metadata and React rendering code (MIT).
 
 ### Upgrading notes
 
 1. Catalog universe is now LaunchHub `badgeRequired` only. Ids that are not badge-required in the snapshot (for example `peerpush`, `scoutforge`, `trylaunch`, `startupbase`) were removed from `FEATURED_BADGE_CATALOG`. Slug helpers for some of those providers remain for custom `badges` embeds.
-2. New catalog ids without a verified public badge image are `requiresListing` stubs — pass `overrides` with a verified `href` + `src`, or they stay omitted.
+2. Catalog ids without a verified public badge image render a neutral package fallback image by default. Pass `overrides.src` with a verified official asset when you have one; optionally override `href` for a product listing URL.
 3. Republish / redeploy the consumer site after you choose to cut a package release. This sync does not publish npm.
 
 ## Package layout
