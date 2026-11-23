@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_BADGE_IMAGE_IDS,
   DEFAULT_FEATURED_BADGE_IDS,
   FEATURED_BADGE_CATALOG,
   FEATURED_BADGE_IDS,
@@ -8,6 +9,10 @@ import {
   resolveFeaturedBadges,
 } from '../catalog';
 import { DEFAULT_FEATURED_BADGES } from '../curated-badges';
+import {
+  DEFAULT_FEATURED_BADGE_IMAGE_SRC,
+  needsDefaultBadgeImage,
+} from '../default-badge-image';
 
 describe('FEATURED_BADGE_CATALOG', () => {
   it('has unique ids', () => {
@@ -19,51 +24,65 @@ describe('FEATURED_BADGE_CATALOG', () => {
     expect(FEATURED_BADGE_IDS).toEqual(FEATURED_BADGE_CATALOG.map(badge => badge.id));
   });
 
+  it('keeps all 28 LaunchHub badgeRequired catalog members', () => {
+    expect(FEATURED_BADGE_CATALOG).toHaveLength(28);
+  });
+
   it('includes LaunchHub badgeRequired providers with known public assets', () => {
     for (const id of ['sumodir', 'yodirectory', 'twelve', 'ufind'] as const) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
-      expect(getFeaturedBadge(id)?.requiresListing).not.toBe(true);
+      expect(getFeaturedBadge(id)?.usesDefaultBadgeImage).not.toBe(true);
+      expect(needsDefaultBadgeImage(getFeaturedBadge(id)?.src)).toBe(false);
     }
   });
 
-  it('marks missing-asset LaunchHub badgeRequired rows as listing stubs', () => {
-    for (const id of ['dangai', 'productfame', 'hunt0'] as const) {
-      expect(getFeaturedBadge(id)?.requiresListing).toBe(true);
+  it('marks missing-official-asset rows with usesDefaultBadgeImage', () => {
+    expect(DEFAULT_BADGE_IMAGE_IDS).toHaveLength(14);
+    for (const id of DEFAULT_BADGE_IMAGE_IDS) {
+      expect(getFeaturedBadge(id)?.usesDefaultBadgeImage).toBe(true);
     }
   });
 
-  it('keeps DEFAULT_FEATURED_BADGE_IDS as a known subset', () => {
+  it('keeps DEFAULT_FEATURED_BADGE_IDS as a known subset with official assets', () => {
     for (const id of DEFAULT_FEATURED_BADGE_IDS) {
       expect(getFeaturedBadge(id)?.id).toBe(id);
-      expect(getFeaturedBadge(id)?.requiresListing).not.toBe(true);
+      expect(getFeaturedBadge(id)?.usesDefaultBadgeImage).not.toBe(true);
     }
   });
 
-  it('aligns LISTING_REQUIRED_BADGE_IDS with requiresListing rows', () => {
-    expect([...LISTING_REQUIRED_BADGE_IDS].sort()).toEqual(
-      FEATURED_BADGE_CATALOG.filter(badge => badge.requiresListing)
-        .map(badge => badge.id)
-        .sort(),
-    );
+  it('keeps LISTING_REQUIRED_BADGE_IDS empty after default-image fallback', () => {
+    expect(LISTING_REQUIRED_BADGE_IDS).toEqual([]);
   });
 });
 
 describe('resolveFeaturedBadges', () => {
-  it('returns renderable catalog rows when nothing is selected (skips listing stubs)', () => {
+  it('renders the full catalog when nothing is selected (all 28)', () => {
     const resolved = resolveFeaturedBadges();
-    expect(resolved).toHaveLength(
-      FEATURED_BADGE_CATALOG.length - LISTING_REQUIRED_BADGE_IDS.length,
-    );
-    expect(resolved.every(badge => !LISTING_REQUIRED_BADGE_IDS.includes(badge.id as never))).toBe(
-      true,
-    );
+    expect(resolved).toHaveLength(28);
+    expect(resolved.map(badge => badge.id)).toEqual([...FEATURED_BADGE_IDS]);
+  });
+
+  it('supplies the neutral fallback image for DEFAULT_BADGE_IMAGE_IDS', () => {
+    const resolved = resolveFeaturedBadges({ ids: DEFAULT_BADGE_IMAGE_IDS });
+    expect(resolved).toHaveLength(14);
+    for (const badge of resolved) {
+      expect(badge.src).toBe(DEFAULT_FEATURED_BADGE_IMAGE_SRC);
+      expect(badge.src.startsWith('data:image/svg+xml')).toBe(true);
+      expect(badge.src.toLowerCase()).not.toContain('official');
+    }
+  });
+
+  it('preserves genuine official badge images', () => {
+    const twelve = resolveFeaturedBadges({ ids: ['twelve'] })[0];
+    expect(twelve?.src).toBe('https://twelve.tools/badge0-white.svg');
+    expect(twelve?.src).not.toBe(DEFAULT_FEATURED_BADGE_IMAGE_SRC);
   });
 
   it('preserves id order and skips unknown ids', () => {
     const resolved = resolveFeaturedBadges({
-      ids: ['twelve', 'missing', 'neeed'],
+      ids: ['twelve', 'missing', 'neeed', 'dangai'],
     });
-    expect(resolved.map(badge => badge.id)).toEqual(['twelve', 'neeed']);
+    expect(resolved.map(badge => badge.id)).toEqual(['twelve', 'neeed', 'dangai']);
   });
 
   it('appends custom badges after catalog matches', () => {
@@ -81,56 +100,95 @@ describe('resolveFeaturedBadges', () => {
     expect(resolved[1]).toEqual(custom);
   });
 
-  it('uses a private catalog override', () => {
-    const catalog = [
-      {
-        id: 'private',
-        href: 'https://example.com/p',
-        src: 'https://example.com/p.svg',
-        alt: 'Private',
-      },
-    ] as const;
-    expect(resolveFeaturedBadges({ ids: ['private'], catalog })).toEqual([...catalog]);
-  });
-
-  it('merges overrides onto catalog matches with explicit fields winning', () => {
+  it('lets overrides replace the fallback with a verified badge image', () => {
     const resolved = resolveFeaturedBadges({
-      ids: ['twelve', 'dangai'],
+      ids: ['dangai'],
       overrides: {
-        twelve: { href: 'https://twelve.tools/my-tool' },
         dangai: {
           href: 'https://dang.ai/my-app',
-          src: 'https://dang.ai/badge.svg',
+          src: 'https://cdn.example.com/dang-official-badge.svg',
           alt: 'My App on Dang AI',
         },
       },
     });
-    expect(resolved).toHaveLength(2);
-    expect(resolved[0]).toMatchObject({
-      id: 'twelve',
-      href: 'https://twelve.tools/my-tool',
-      src: 'https://twelve.tools/badge0-white.svg',
-      alt: 'Featured on Twelve Tools',
-    });
-    expect(resolved[1]).toMatchObject({
-      id: 'dangai',
-      href: 'https://dang.ai/my-app',
-      src: 'https://dang.ai/badge.svg',
-      alt: 'My App on Dang AI',
-    });
+    expect(resolved).toEqual([
+      {
+        id: 'dangai',
+        href: 'https://dang.ai/my-app',
+        src: 'https://cdn.example.com/dang-official-badge.svg',
+        alt: 'My App on Dang AI',
+        width: 200,
+        height: 54,
+      },
+    ]);
   });
 
-  it('does not treat a partial listing override as enough for requiresListing ids', () => {
+  it('keeps the fallback when an override only patches href', () => {
     const resolved = resolveFeaturedBadges({
       ids: ['dangai'],
-      overrides: { dangai: { href: 'https://dang.ai/my-app' } },
+      overrides: { dangai: { href: 'https://dang.ai/products/my-app' } },
     });
-    expect(resolved).toEqual([]);
+    expect(resolved).toHaveLength(1);
+    expect(resolved[0]?.href).toBe('https://dang.ai/products/my-app');
+    expect(resolved[0]?.src).toBe(DEFAULT_FEATURED_BADGE_IMAGE_SRC);
+  });
+
+  it('restores the fallback when an override sets a non-image src', () => {
+    const resolved = resolveFeaturedBadges({
+      ids: ['dangai'],
+      overrides: { dangai: { src: 'https://dang.ai/' } },
+    });
+    expect(resolved[0]?.src).toBe(DEFAULT_FEATURED_BADGE_IMAGE_SRC);
+  });
+
+  it('still skips requiresListing rows without listing overrides', () => {
+    const catalog = [
+      {
+        id: 'bound',
+        href: 'https://example.com/',
+        src: 'https://example.com/',
+        alt: 'Bound',
+        requiresListing: true,
+      },
+    ] as const;
+    expect(resolveFeaturedBadges({ ids: ['bound'], catalog })).toEqual([]);
+    expect(
+      resolveFeaturedBadges({
+        ids: ['bound'],
+        catalog,
+        overrides: {
+          bound: {
+            href: 'https://example.com/p/app',
+            src: 'https://example.com/p/app/badge.png',
+          },
+        },
+      }),
+    ).toMatchObject([
+      {
+        id: 'bound',
+        href: 'https://example.com/p/app',
+        src: 'https://example.com/p/app/badge.png',
+      },
+    ]);
   });
 });
 
 describe('DEFAULT_FEATURED_BADGES', () => {
-  it('resolves default ids without overrides (all defaults are renderable)', () => {
+  it('resolves default ids without overrides', () => {
     expect(DEFAULT_FEATURED_BADGES.map(badge => badge.id)).toEqual([...DEFAULT_FEATURED_BADGE_IDS]);
+  });
+});
+
+describe('needsDefaultBadgeImage', () => {
+  it('detects missing and homepage stub srcs', () => {
+    expect(needsDefaultBadgeImage(undefined)).toBe(true);
+    expect(needsDefaultBadgeImage('')).toBe(true);
+    expect(needsDefaultBadgeImage('https://dang.ai/')).toBe(true);
+    expect(needsDefaultBadgeImage('https://twelve.tools/badge0-white.svg')).toBe(false);
+    expect(
+      needsDefaultBadgeImage(
+        'https://fazier.com/api/v1/public/badges/launch_badges.svg?badge_type=launched&theme=light',
+      ),
+    ).toBe(false);
   });
 });
