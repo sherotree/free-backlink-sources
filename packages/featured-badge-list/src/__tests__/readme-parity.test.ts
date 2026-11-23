@@ -62,15 +62,29 @@ describe('README ↔ catalog parity', () => {
   });
 
   it('documents FeaturedBadgeItem fields', () => {
-    for (const field of ['id', 'href', 'src', 'alt', 'width', 'height', 'title', 'requiresListing']) {
+    for (const field of [
+      'id',
+      'href',
+      'src',
+      'alt',
+      'width',
+      'height',
+      'title',
+      'requiresListing',
+      'usesDefaultBadgeImage',
+    ]) {
       expect(readme).toContain(`\`${field}\``);
     }
   });
 
-  it('documents listing-bound safety and helpers', () => {
+  it('documents listing-bound safety, default image fallback, and helpers', () => {
     expect(readme).toContain('LISTING_REQUIRED_BADGE_IDS');
+    expect(readme).toContain('DEFAULT_BADGE_IMAGE_IDS');
+    expect(readme).toContain('DEFAULT_FEATURED_BADGE_IMAGE_SRC');
     expect(readme).toContain('peerpushListing');
     expect(readme).toContain('requiresListing');
+    expect(readme).toContain('usesDefaultBadgeImage');
+    expect(readme).toContain('neutral package fallback');
     expect(readme).toContain('never silently ships another product');
   });
 
