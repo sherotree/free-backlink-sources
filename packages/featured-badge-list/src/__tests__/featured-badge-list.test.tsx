@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { FeaturedBadgeList } from '../featured-badge-list';
 import { FeaturedBadgeRotator } from '../featured-badge-rotator';
 
@@ -49,9 +50,21 @@ describe('FeaturedBadgeRotator', () => {
     expect(screen.getByAltText('Badge B')).toBeTruthy();
   });
 
-  it('hides inactive badges from the accessibility tree', () => {
+  it('hides non-first badges from the accessibility tree', () => {
     const { container } = render(<FeaturedBadgeRotator badges={[...sampleBadges]} />);
     const hidden = container.querySelectorAll('[aria-hidden="true"]');
     expect(hidden.length).toBe(1);
+  });
+
+  it('server-renders with CSS rotation hooks and no client timer', () => {
+    const html = renderToStaticMarkup(
+      <FeaturedBadgeRotator badges={[...sampleBadges]} intervalMs={5000} />,
+    );
+    expect(html).toContain('fbl-rotator');
+    expect(html).toContain('fbl-rotator--animate');
+    expect(html).toContain('@keyframes');
+    expect(html).toContain('https://example.com/a');
+    expect(html).toContain('https://example.com/b');
+    expect(html).toContain('animation-delay:5000ms');
   });
 });

@@ -1,3 +1,5 @@
+export { FeaturedBadgeRotator } from './featured-badge-rotator';
+export type { FeaturedBadgeRotatorProps } from './featured-badge-rotator';
 export { FeaturedBadgeList } from './featured-badge-list';
 export type { FeaturedBadgeListProps } from './featured-badge-list';
 

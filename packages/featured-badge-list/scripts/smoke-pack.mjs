@@ -1,6 +1,6 @@
 /**
  * Pack the package, install the tarball into a temp consumer app, and verify
- * ESM imports resolve for both the server-safe entry and the rotator entry.
+ * ESM imports resolve for the SSR-first root entry and the /rotator alias.
  */
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -59,6 +59,7 @@ import { readFileSync } from 'node:fs';
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import {
+  FeaturedBadgeRotator as RootFeaturedBadgeRotator,
   FeaturedBadgeList,
   FEATURED_BADGE_CATALOG,
   DEFAULT_FEATURED_BADGE_IDS,
@@ -72,6 +73,8 @@ const cssPath = require.resolve('@sherotree/featured-badge-list/styles.css');
 const css = readFileSync(cssPath, 'utf8');
 assert.ok(css.includes('.fbl-list'));
 assert.ok(css.includes('.fbl-rotator'));
+assert.ok(css.includes('.fbl-rotator--animate'));
+assert.ok(css.indexOf('.fbl-rotator') < css.indexOf('.fbl-list'), 'rotator CSS should come before list CSS');
 const rotatorBlock = css.slice(css.indexOf('.fbl-rotator {'), css.indexOf('.fbl-rotator__item'));
 assert.ok(rotatorBlock.includes('width: auto;'));
 assert.ok(rotatorBlock.includes('flex-shrink: 0;'));
@@ -90,20 +93,30 @@ assert.equal(all.length, FEATURED_BADGE_CATALOG.length);
 assert.ok(all.every(badge => typeof badge.src === 'string' && badge.src.length > 0));
 assert.ok(all.some(badge => badge.src.startsWith('data:image/svg+xml')));
 
+assert.equal(typeof RootFeaturedBadgeRotator, 'function');
+assert.equal(typeof FeaturedBadgeRotator, 'function');
+
 const listHtml = renderToStaticMarkup(
   createElement(FeaturedBadgeList, { ids: DEFAULT_FEATURED_BADGE_IDS }),
 );
 assert.match(listHtml, /fbl-list/);
 assert.match(listHtml, /neeed|twelve|ufind|fazier/);
 
-assert.equal(typeof FeaturedBadgeRotator, 'function');
+const rotatorHtml = renderToStaticMarkup(
+  createElement(RootFeaturedBadgeRotator, { ids: DEFAULT_FEATURED_BADGE_IDS }),
+);
+assert.match(rotatorHtml, /fbl-rotator/);
+assert.match(rotatorHtml, /fbl-rotator--animate/);
+assert.match(rotatorHtml, /@keyframes/);
+assert.match(rotatorHtml, /neeed|twelve|ufind|fazier/);
 
 const rotatorSource = readFileSync(
   require.resolve('@sherotree/featured-badge-list/rotator'),
   'utf8',
 );
-assert.match(rotatorSource, /["']use client["']/);
+assert.doesNotMatch(rotatorSource, /["']use client["']/);
 assert.match(rotatorSource, /4500/);
+assert.doesNotMatch(rotatorSource, /useEffect/);
 
 console.log('smoke ok', { catalog: FEATURED_BADGE_CATALOG.length, pkgPath });
 `,

@@ -1,7 +1,7 @@
 {
   "name": "@sherotree/featured-badge-list",
-  "version": "0.5.0",
-  "description": "Typed React components for reciprocal / directory featured badges — list and rotating single-badge layouts with a configurable catalog.",
+  "version": "0.7.0",
+  "description": "Typed React components for reciprocal / directory featured badges — SSR-first single-badge CSS rotator, optional multi-badge list, configurable catalog.",
   "author": "Sherotree",
   "license": "MIT",
   "repository": {

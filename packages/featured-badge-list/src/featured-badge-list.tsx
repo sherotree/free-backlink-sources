@@ -6,9 +6,9 @@ import type { FeaturedBadgeSelectionProps } from './types';
 export type FeaturedBadgeListProps = FeaturedBadgeSelectionProps;
 
 /**
- * Optional multi-badge flex wrap when you need several embeds visible at once.
- * Prefer `FeaturedBadgeRotator` (`@sherotree/featured-badge-list/rotator`) for
- * the usual compact single-badge footer slot.
+ * Opt-in multi-badge flex wrap when you need several embeds visible at once.
+ * Default presentation is SSR-first `FeaturedBadgeRotator` (CSS single-badge
+ * rotation) from the package root.
  *
  * Server-safe. Import `@sherotree/featured-badge-list/styles.css` once for layout.
  */

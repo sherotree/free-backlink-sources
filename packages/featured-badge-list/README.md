@@ -1,6 +1,6 @@
 # @sherotree/featured-badge-list
 
-Typed React components for reciprocal / directory **featured badges**. Prefer **`FeaturedBadgeRotator`** for the usual compact single-badge footer slot; use **`FeaturedBadgeList`** only when you need several badges visible at once. Both keep every partner `<a>` + `<img>` in the DOM (so badge crawlers still find embeds).
+Typed React components for reciprocal / directory **featured badges**. **Default presentation is `FeaturedBadgeRotator`** — SSR-first, one compact badge that rotates through partners via CSS (no `"use client"`, no JS timer). Use **`FeaturedBadgeList`** only when you need several badges visible at once. Both keep every partner `<a>` + `<img>` in the server HTML (so badge crawlers still find embeds).
 
 **Author / brand:** Sherotree  
 **License:** MIT  
@@ -19,13 +19,15 @@ Import the stylesheet once (plain CSS, no Tailwind required):
 import '@sherotree/featured-badge-list/styles.css';
 ```
 
-## Quick start (prefer `FeaturedBadgeRotator`)
+## Quick start (default: `FeaturedBadgeRotator`)
 
-Import the rotator from the **`/rotator`** entry (preserves the `"use client"` boundary in Next.js App Router). Default styles are already footer-friendly: inline width, `max-width: 12rem`, no extra margin/padding, badge height `1.75rem` (`2rem` from `640px`), muted opacity `0.5` → `0.8` on hover/focus. Rotation defaults to **`4500ms`** and stops when `prefers-reduced-motion: reduce` is set — no Tailwind `className` patches required for the common footer row.
+The default badge UI is a **single rotating badge**, not a spread multi-badge row. It is **SSR-first**: safe in React Server Components / `renderToString` / `renderToStaticMarkup`. Rotation is CSS-driven (scoped `@keyframes` per instance); there is no `"use client"` boundary and no `useEffect` timer. Import from the package root (recommended) or the `/rotator` alias. Default styles are already footer-friendly: inline width, `max-width: 12rem`, no extra margin/padding, badge height `1.75rem` (`2rem` from `640px`), muted opacity `0.5` → `0.8` on hover/focus. Rotation defaults to **`4500ms`** and stops when `prefers-reduced-motion: reduce` is set — no Tailwind `className` patches required for the common footer row.
 
 ```tsx
-import { DEFAULT_FEATURED_BADGE_IDS } from '@sherotree/featured-badge-list';
-import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
+import {
+  DEFAULT_FEATURED_BADGE_IDS,
+  FeaturedBadgeRotator,
+} from '@sherotree/featured-badge-list';
 import '@sherotree/featured-badge-list/styles.css';
 
 export function FooterBadges() {
@@ -40,9 +42,9 @@ Supply **your** product listings with `overrides` (explicit fields always win). 
 ```tsx
 import {
   DEFAULT_FEATURED_BADGE_IDS,
+  FeaturedBadgeRotator,
   ufindListing,
 } from '@sherotree/featured-badge-list';
-import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 
 const ufind = ufindListing('your-slug');
 
@@ -68,15 +70,14 @@ Optional: pass `intervalMs` to change the cadence (still ignored under reduced m
 
 ### Next.js (App Router)
 
-- Prefer `FeaturedBadgeRotator` from `@sherotree/featured-badge-list/rotator` in a Client Component (or a thin `'use client'` re-export).
-- Import `styles.css` once (layout root or the client badge module).
+- Import `FeaturedBadgeRotator` from `@sherotree/featured-badge-list` directly in a **Server Component** (no `'use client'` wrapper required).
+- Import `styles.css` once (layout root or the badge module).
 - Pass `overrides` for any listing-bound provider you select by `ids`.
+- Reach for `FeaturedBadgeList` only when several badges must stay visible together.
+- `@sherotree/featured-badge-list/rotator` remains a compatible re-export of the same SSR component.
 
 ```tsx
-'use client';
-
-import { DEFAULT_FEATURED_BADGE_IDS, ufindListing } from '@sherotree/featured-badge-list';
-import { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
+import { DEFAULT_FEATURED_BADGE_IDS, FeaturedBadgeRotator, ufindListing } from '@sherotree/featured-badge-list';
 import '@sherotree/featured-badge-list/styles.css';
 
 const ufind = ufindListing('your-slug');
@@ -93,13 +94,6 @@ export function SiteBadges() {
 }
 ```
 
-If your bundler does not honor package `"use client"` banners:
-
-```tsx
-'use client';
-export { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
-```
-
 ## Important SEO / compliance notes
 
 - Components render `<a target="_blank" rel="noopener">` (no `nofollow`). That keeps the default **dofollow** semantics many directories require on *your* site. Do not add `nofollow` if a provider requires a dofollow backlink.
@@ -111,7 +105,7 @@ export { FeaturedBadgeRotator } from '@sherotree/featured-badge-list/rotator';
 
 ## API
 
-### Selection props (shared by `FeaturedBadgeList` and `FeaturedBadgeRotator`)
+### Selection props (shared by `FeaturedBadgeRotator` and `FeaturedBadgeList`)
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -144,26 +138,28 @@ Resolution rules:
 | `requiresListing` | `boolean` | catalog only | — | When true, skipped until `overrides[id]` supplies listing `href` + real badge `src` |
 | `usesDefaultBadgeImage` | `boolean` | catalog only | — | When true (or `src` is not an image URL), render the neutral package fallback unless overridden |
 
-### `FeaturedBadgeRotator` (preferred)
+### `FeaturedBadgeRotator` (default, SSR-first)
 
-Client component for the usual **one-badge-at-a-time** footer embed. Import from `@sherotree/featured-badge-list/rotator`. Props: selection props +:
+Default server-safe component: **one badge at a time**, rotating through the resolved set with **CSS** (scoped keyframes, no client timer). Import from the package root (or `/rotator` alias). Props: selection props +:
 
 | Prop | Type | Default | Description |
 | --- | --- | --- | --- |
-| `intervalMs` | `number` | `4500` | Rotation interval; ignored when `prefers-reduced-motion: reduce` |
+| `intervalMs` | `number` | `4500` | CSS rotation interval; ignored when `prefers-reduced-motion: reduce` |
 
 Default CSS (`.fbl-rotator`) is compact and row-safe: `width: auto`, `max-width: 12rem`, `flex-shrink: 0`, `margin: 0`, `padding: 0`, image height `1.75rem` / `2rem` from `640px`, active opacity `0.5` (hover/focus-within `0.8`). Pass `className` only when you need a site-specific override.
 
-Inactive badges stay mounted with `aria-hidden` and `tabIndex={-1}` so crawlers still see every embed.
+Every partner `<a>` + `<img>` is present in the server HTML. Non-first items use `aria-hidden` and `tabIndex={-1}` for the accessibility tree; crawlers still see every embed.
 
-### `FeaturedBadgeList` (multi-badge layout)
+### `FeaturedBadgeList` (opt-in multi-badge layout)
 
-Use when you need **several badges visible at the same time** (wrapped flex row). Server-safe; import from the package root. Renders `null` when the resolved list is empty. Props: selection props only (`FeaturedBadgeListProps`).
+Optional layout when you need **several badges visible at the same time** (wrapped flex row) instead of the default rotator. Server-safe; import from the package root. Renders `null` when the resolved list is empty. Props: selection props only (`FeaturedBadgeListProps`).
 
 ### Catalog helpers
 
 ```ts
 import {
+  FeaturedBadgeRotator,
+  FeaturedBadgeList,
   FEATURED_BADGE_CATALOG,
   FEATURED_BADGE_IDS,
   DEFAULT_FEATURED_BADGE_IDS,
@@ -180,6 +176,7 @@ import {
   trylaunchListing,
   ufindListing,
 } from '@sherotree/featured-badge-list';
+// `/rotator` re-exports the same SSR `FeaturedBadgeRotator` for older imports.
 ```
 
 | Export | Type / shape | Description |
@@ -250,10 +247,11 @@ Machine-readable markers below (`catalog-id:<id>`) are asserted by unit tests so
 
 ## Styling
 
-Default layout ships in `styles.css` under `.fbl-list` / `.fbl-rotator` selectors. No Tailwind peer dependency.
+Default layout ships in `styles.css` under `.fbl-rotator` / `.fbl-list` selectors. No Tailwind peer dependency.
 
-- **`.fbl-rotator`** — preferred compact single-badge footer defaults (see above). Designed so footer rows do not need Tailwind margin/padding/width/shrink patches.
-- **`.fbl-list`** — multi-badge wrap for when several embeds should show together.
+- **`.fbl-rotator`** — default compact single-badge footer carousel (SSR + CSS rotation; see above). Designed so footer rows do not need Tailwind margin/padding/width/shrink patches.
+- **`.fbl-rotator--animate`** — applied when two or more badges resolve; pauses on hover/focus-within; disabled under `prefers-reduced-motion`.
+- **`.fbl-list`** — opt-in multi-badge wrap for when several embeds should show together.
 
 Pass `className` or write more specific CSS when a host site needs a different density. The package does not ship site-specific design tokens (for example brand paper colors).
 
@@ -279,9 +277,9 @@ Badge **images are not vendored** in this package; `src` points at each director
 
 | Export | Contents |
 | --- | --- |
-| `@sherotree/featured-badge-list` | `FeaturedBadgeList` + catalog helpers (SSR-safe) |
-| `@sherotree/featured-badge-list/rotator` | `FeaturedBadgeRotator` (`"use client"`) |
-| `@sherotree/featured-badge-list/styles.css` | Default styles |
+| `@sherotree/featured-badge-list` | `FeaturedBadgeRotator` (default SSR UI) + `FeaturedBadgeList` (opt-in) + catalog helpers |
+| `@sherotree/featured-badge-list/rotator` | Same SSR `FeaturedBadgeRotator` (compat alias) |
+| `@sherotree/featured-badge-list/styles.css` | Default styles (rotator-first, CSS animation) |
 
 Published files (npm pack allowlist): `dist/`, `LICENSE`, `README.md` only.
 
