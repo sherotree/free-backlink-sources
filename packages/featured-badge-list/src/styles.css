@@ -56,17 +56,23 @@
 }
 
 /* CSS-driven rotation (no client JS). Keyframes are injected per instance.
-   First item stays in normal flow so the slot keeps a stable width. */
+   First item stays in normal flow so the slot keeps a stable width.
+
+   Use `animation-fill-mode: forwards` (not `both`/`backwards`): backwards would
+   apply the 0% keyframe (opacity .5) during each item's animation-delay, so
+   every waiting badge stacks visibly. Keep base opacity:0 + pointer-events:none
+   until the keyframe's visible segment (which also sets pointer-events:auto). */
 .fbl-rotator--animate .fbl-rotator__item--animated {
   position: absolute;
   inset-inline: 0;
   top: 0;
   width: 100%;
   opacity: 0;
+  pointer-events: none;
   transition: none;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-fill-mode: both;
+  animation-fill-mode: forwards;
 }
 
 .fbl-rotator--animate .fbl-rotator__item--animated:first-child {
@@ -77,6 +83,8 @@
   animation-play-state: paused;
 }
 
+/* Only the currently visible item has pointer-events:auto (from keyframes),
+   so this hover brighten cannot light up stacked invisible siblings. */
 .fbl-rotator--animate .fbl-rotator__item--animated:hover,
 .fbl-rotator--animate .fbl-rotator__item--animated:focus-within {
   z-index: 20;

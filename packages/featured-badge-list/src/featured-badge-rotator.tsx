@@ -23,10 +23,13 @@ function buildRotatorKeyframes(name: string, count: number): string {
   const visibleEnd = 100 / count;
   const fade = Math.min(2, visibleEnd / 4);
   const hideAt = Math.min(100, visibleEnd + fade);
+  // pointer-events must flip with opacity: absolute siblings share one hit box;
+  // leaving invisible items clickable makes hover force opacity:.8 on a stacked
+  // badge that was meant to stay hidden.
   return (
     `@keyframes ${name}{` +
-    `0%,${visibleEnd}%{opacity:.5}` +
-    `${hideAt}%,100%{opacity:0}` +
+    `0%,${visibleEnd}%{opacity:.5;pointer-events:auto}` +
+    `${hideAt}%,100%{opacity:0;pointer-events:none}` +
     `}`
   );
 }

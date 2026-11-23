@@ -67,4 +67,12 @@ describe('FeaturedBadgeRotator', () => {
     expect(html).toContain('https://example.com/b');
     expect(html).toContain('animation-delay:5000ms');
   });
+
+  it('keyframes gate pointer-events with opacity so hover cannot unhide stacked badges', () => {
+    const html = renderToStaticMarkup(
+      <FeaturedBadgeRotator badges={[...sampleBadges]} intervalMs={5000} />,
+    );
+    expect(html).toContain('opacity:.5;pointer-events:auto');
+    expect(html).toContain('opacity:0;pointer-events:none');
+  });
 });

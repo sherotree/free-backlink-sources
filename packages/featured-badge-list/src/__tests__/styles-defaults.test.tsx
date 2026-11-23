@@ -42,6 +42,18 @@ describe('FeaturedBadgeRotator default CSS (footer-compact)', () => {
     expect(styles).not.toMatch(/grayscale/i);
   });
 
+  it('avoids delay-stack and hover-stack (forwards fill + pointer-events gate)', () => {
+    expect(styles).toMatch(
+      /\.fbl-rotator--animate \.fbl-rotator__item--animated\s*\{[^}]*animation-fill-mode:\s*forwards;/s,
+    );
+    expect(styles).not.toMatch(
+      /\.fbl-rotator--animate \.fbl-rotator__item--animated\s*\{[^}]*animation-fill-mode:\s*both;/s,
+    );
+    expect(styles).toMatch(
+      /\.fbl-rotator--animate \.fbl-rotator__item--animated\s*\{[^}]*pointer-events:\s*none;/s,
+    );
+  });
+
   it('renders the default rotator class for host overrides', () => {
     const { container } = render(
       <FeaturedBadgeRotator
