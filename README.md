@@ -409,6 +409,7 @@ Submit without paying.
 | [First 100 Users](https://first100users.com/) | Tools | 25 | 204 | 20 | Free | Conditional | No | [Submit](https://first100users.com/) |
 | [ProductCool](https://productcool.com/) | Tools | 15 | 274 | 20 | Free | Conditional | No | [Submit](https://productcool.com/) |
 | [NoSignupTools](https://nosignuptools.com/) | Tools | 4 | 463 | 20 | Free | Conditional | No | [Submit](https://nosignuptools.com/) |
+| [MeetNewAI](https://meetnewai.com/) | AI | — | — | — | Free | Conditional | No | [Submit](https://meetnewai.com/submit) |
 
 ## Freemium (20)
 
