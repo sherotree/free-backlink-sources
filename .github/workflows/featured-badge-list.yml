@@ -1,0 +1,48 @@
+name: Featured Badge List package
+
+on:
+  push:
+    paths:
+      - "packages/featured-badge-list/**"
+      - ".github/workflows/featured-badge-list.yml"
+  pull_request:
+    paths:
+      - "packages/featured-badge-list/**"
+      - ".github/workflows/featured-badge-list.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: packages/featured-badge-list
+
+jobs:
+  build-test-pack:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: packages/featured-badge-list/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Pack dry-run
+        run: npm run pack:dry
+
+      - name: Pack consumer smoke
+        run: npm run pack:smoke

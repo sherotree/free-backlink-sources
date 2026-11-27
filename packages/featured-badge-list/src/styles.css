@@ -1,0 +1,187 @@
+/* Default layout for @sherotree/featured-badge-list.
+   Import once: `import '@sherotree/featured-badge-list/styles.css'`
+   Override via the `className` prop or by targeting these selectors.
+
+   Default presentation is FeaturedBadgeRotator (`.fbl-rotator`): compact
+   single-badge footer slot with SSR-first CSS rotation. FeaturedBadgeList
+   (`.fbl-list`) is the opt-in multi-badge wrap. Sites can still override with
+   `className` or more specific CSS — do not rely on site-specific design
+   tokens here. */
+
+/* Compact single-badge footer carousel (default presentation, SSR-safe). */
+.fbl-rotator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: auto;
+  max-width: 12rem;
+  min-height: 1.75rem;
+  flex-shrink: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .fbl-rotator {
+    min-height: 2rem;
+  }
+}
+
+.fbl-rotator__item {
+  display: flex;
+  justify-content: center;
+  transition: opacity 300ms ease-out;
+}
+
+.fbl-rotator__item--active {
+  position: relative;
+  z-index: 10;
+  opacity: 0.5;
+}
+
+.fbl-rotator__item--active:hover,
+.fbl-rotator__item--active:focus-within {
+  opacity: 0.8;
+}
+
+.fbl-rotator__item--hidden {
+  pointer-events: none;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  opacity: 0;
+}
+
+/* CSS-driven rotation (no client JS). Keyframes are injected per instance.
+   First item stays in normal flow so the slot keeps a stable width.
+
+   Use `animation-fill-mode: forwards` (not `both`/`backwards`): backwards would
+   apply the 0% keyframe (opacity .5) during each item's animation-delay, so
+   every waiting badge stacks visibly. Keep base opacity:0 + pointer-events:none
+   until the keyframe's visible segment (which also sets pointer-events:auto). */
+.fbl-rotator--animate .fbl-rotator__item--animated {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+}
+
+.fbl-rotator--animate .fbl-rotator__item--animated:first-child {
+  position: relative;
+}
+
+.fbl-rotator--animate:is(:hover, :focus-within) .fbl-rotator__item--animated {
+  animation-play-state: paused;
+}
+
+/* Only the currently visible item has pointer-events:auto (from keyframes),
+   so this hover brighten cannot light up stacked invisible siblings. */
+.fbl-rotator--animate .fbl-rotator__item--animated:hover,
+.fbl-rotator--animate .fbl-rotator__item--animated:focus-within {
+  z-index: 20;
+  opacity: 0.8 !important;
+}
+
+.fbl-rotator__link {
+  display: inline-flex;
+  max-width: 100%;
+  border-radius: 0.125rem;
+  outline: none;
+}
+
+.fbl-rotator__link:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563eb;
+}
+
+.fbl-rotator__img {
+  display: block;
+  height: 1.75rem;
+  width: auto;
+  max-width: 12rem;
+  object-fit: contain;
+}
+
+@media (min-width: 640px) {
+  .fbl-rotator__img {
+    height: 2rem;
+  }
+}
+
+/* Opt-in multi-badge wrap (FeaturedBadgeList). */
+.fbl-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 1.25rem;
+  row-gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .fbl-list {
+    column-gap: 1.5rem;
+    row-gap: 1.25rem;
+  }
+}
+
+.fbl-list__item {
+  flex-shrink: 0;
+}
+
+.fbl-list__link {
+  display: inline-flex;
+  border-radius: 0.125rem;
+  opacity: 0.8;
+  transition: opacity 150ms ease;
+  outline: none;
+}
+
+.fbl-list__link:hover,
+.fbl-list__link:focus-visible {
+  opacity: 1;
+}
+
+.fbl-list__link:focus-visible {
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2563eb;
+}
+
+.fbl-list__img {
+  height: 2.5rem;
+  width: auto;
+  max-width: min(100%, 14rem);
+  object-fit: contain;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fbl-list__link,
+  .fbl-rotator__item {
+    transition: none;
+  }
+
+  .fbl-rotator--animate .fbl-rotator__item--animated {
+    animation: none !important;
+  }
+
+  .fbl-rotator--animate .fbl-rotator__item--animated:first-child {
+    position: relative;
+    z-index: 10;
+    opacity: 0.5 !important;
+  }
+
+  .fbl-rotator--animate .fbl-rotator__item--animated:not(:first-child) {
+    pointer-events: none;
+    opacity: 0 !important;
+  }
+}
